@@ -143,7 +143,7 @@
                         <div id="collapse_<?php echo $counter?>" class="col collapse" aria-labelledby="heading<?php echo $counter?>">
                             <div class="row">
                                 <div class="col col-6">
-                                    VAT Exempt Pricexx:
+                                    VAT Exempt Price:
                                 </div>
                                 <div class="col col-6 _transaction-record-right">
                                     <?php echo $vat_exempt_price?>
