@@ -1,0 +1,195 @@
+
+.scit {
+    position: relative;
+    margin: auto;
+    max-width: 600px;
+    height: 1024px;
+    max-height: 1024px;
+    outline: black;
+    outline-style: dotted;
+
+    display:flex;
+    flex-direction: column;
+    background-color: #f9ea8f;
+    background-image: linear-gradient(315deg, #f9ea8f 0%, #aff1da 74%);
+
+    font-size: 50
+}
+
+.date-time {
+    padding-top: 10px;
+    height: 3em;
+}
+.contents {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    height: 924px;
+    
+    outline: black;
+    outline-style: groove;
+    background-color: #aff1da;
+
+}
+
+span.date{
+    position: absolute;
+    left: 50px;
+}
+
+span.time{
+    position: absolute;
+    right: 50px;
+}
+
+div.logo {
+    height: 336px;
+    width: 336px;
+    margin: auto;
+    margin-top: 50px;
+}
+img.logo {
+    display: block;
+    max-width:336px;
+    max-height:336px;
+    width: auto;
+    height: auto;
+  }
+}
+.member-picture {
+    height: 200px;
+    width: 200px;
+    margin:auto;
+}
+img.avatar{
+    height: 100%;
+    width: 100%;
+}
+
+div.foot {
+    width: 95%;
+    position: absolute;
+    bottom: 12px;
+}
+.footer-date {
+    
+    width: 95%;
+    position: absolute;
+    bottom: 300px;
+}
+
+._label {
+    text-align: left;
+    font-style: italic;
+    color: gray;
+}
+
+.member-details > .row {
+    margin-bottom: 20px;
+}
+
+
+
+.transaction {
+    outline-color: black;
+    background-color: white;
+    overflow: auto;
+
+    width: 100%;
+    height: 700px;
+    padding: 20px 0px;
+}
+
+.transaction-summary {
+    outline-color: black;
+    background-color: white;
+    color: red;
+
+    width: 100%;
+    height: 100px;
+    padding: 20px 0px;
+}
+
+.transaction > .row{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.transaction-history {
+    outline-color: black;
+    background-color: white;
+    overflow: auto;
+
+    width: 100%;
+    height: 800px;
+    padding: 20px 0px;
+}
+
+.transaction-history > .flagged {
+    background: #EB4C3D;
+    color: #fff;
+}
+
+
+.transaction-history > .recent {
+    color: black;
+    /*background: rgba(144, 238, 144, 0.5);*/
+}
+
+.transaction-history > .non-recent {
+    color: gray;
+    font-style: italic;
+
+}
+
+._transaction-record {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+._transaction-record-right {
+    text-align: right;
+}
+
+.title {
+    font-size: larger;
+    font-weight: bold;
+    text-align: center;
+    text-decoration-line: underline;
+
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+._drug-name {
+    font-weight: bold;
+}
+
+
+
+
+
+/*
+scroll bar
+*/
+
+.scrollbar-black::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px; 
+}
+    
+.scrollbar-black::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; 
+}
+.scrollbar-black::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #000; 
+}
+    
+.scrollbar-black {
+    scrollbar-color: #000 #F5F5F5;
+    scrollbar-width: thin;
+}
