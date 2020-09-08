@@ -35,15 +35,6 @@
     
 <script type="text/javascript">
     var clockElement = document.getElementById('clock');
-/*
-    function clock() {
-        clockElement.textContent = new Date().toLocaleString();
-        
-
-    }
-
-    setInterval(clock, 1000);
-*/
 
     var span_clock = document.getElementById('clock_tick');
     var span_date = document.getElementById('date_tick');
@@ -51,12 +42,6 @@
 
     function time() {
         var d = new Date();
-        /*
-        var s = d.getSeconds();
-        var m = d.getMinutes();
-        var h = d.getHours();
-        span_clock.textContent = h + ":" + m + ":" + s;
-        */
         
         var ttt = new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
         span_clock.textContent = ttt;

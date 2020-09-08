@@ -25,6 +25,7 @@
       <a href="home.php"><button type="button">home</button></a>
       <button type="button" id="read">read</button>
       <button type="button" id="transaction">transaction</button>
+      <a href="../backend/logout.php"><button type="button" id="logout">logout</button></a>
       <input type="text" id="nfc_id" name="nfc_id">
 
 
@@ -32,7 +33,7 @@
           <div class="scit">
           <div class="date-time">
             <h5>
-                <span class="date" id="clock_tick">{dd M Y}</span>
-                <span class="time" id="date_tick">{h : m}</span>
+                <span class="date" id="clock_tick"></span>
+                <span class="time" id="date_tick"></span>
             </h5>
           </div>

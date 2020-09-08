@@ -127,7 +127,7 @@ div.foot {
 
 .transaction-history > .flagged {
     background: #EB4C3D;
-    color: #fff;
+    color: #fff !important;
 }
 
 

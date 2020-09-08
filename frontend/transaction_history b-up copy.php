@@ -12,7 +12,7 @@
 
         if($business_type == "pharmacy"){
             $transaction_query = "SELECT `member_id`, `trans_date`, date(trans_date) `ddd`, `company_name` `company`, `branch`, `business_type`, `company_tin`,
-                                    `generic_name`, `brand`, `dose`, `max_monthly`, `max_weekly`, `unit`, `quantity`,
+                                    `generic_name`, `brand`, `dose`, `is_otc`, `max_monthly`, `max_weekly`, `unit`, `quantity`,
                                     `vat_exempt_price`, `discount_price`, `payable_price`
                                     FROM `view_pharma_transactions`
                                     WHERE `osca_id` = '$selected_id' AND date(trans_date) >= (LEFT(NOW() - INTERVAL 3 MONTH,10))
@@ -48,35 +48,115 @@
             $counter = 0;
             if(!isset($ingredient_dosage)) {$ingredient_dosage = array();}
             if(!isset($compound_dosage)) {$compound_dosage = array();}
+            if(!isset($compound_dosage_recent)) {$compound_dosage_recent = array();}
+            if(!isset($max_basis_weekly)) {$max_basis_weekly = array();}
+            if(!isset($max_basis_monthly)) {$max_basis_monthly = array();}
+            
+            while($row = mysqli_fetch_array($result)) // compute total transacted past month
+            {
+                if($business_type == "pharmacy"){
+                    $dose = $row['dose'];
+                    $quantity = $row['quantity'];
+                    $is_otc = ($row['is_otc'] == '1') ? true: false;
+                    $total_dosage = $dose * $quantity;
+
+                    $max_monthly = $row['max_monthly'];
+                    $max_weekly = $row['max_weekly'];
+                
+                    $ddd = $row['ddd'];
+
+                    if(validate_date_month($ddd, "-1")){
+                        $recent = "non-recent";
+                    } else {
+    
+                        $recent = "recent";
+                    }
+                    
+
+                    
+                    $generic_name_collective = $row['generic_name'];
+                    $generic_names = explode(',', $generic_name_collective);
+                    $generic_name_string = "";
+                    $count_generic_names=count($generic_names);
+                    sort($generic_names);
+
+                    for( $i = 0 ; $i < $count_generic_names ; $i++ )
+                    {
+                        $generic_name = $generic_names[$i];
+                        $generic_name_string .= ucfirst($generic_name);
+                        if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i)
+                        {
+                            $generic_name_string .= ", ";
+                        }
+                    }
+
+                    if($recent == "recent") {
+                        if (array_key_exists($generic_name_string, $compound_dosage_recent))
+                        {
+                            $compound_dosage_recent[$generic_name_string] += $total_dosage;
+                        } else {
+                            $compound_dosage_recent[$generic_name_string] = $total_dosage;
+                        }
+                    } else {
+                        $compound_dosage_recent[$generic_name_string] = 0;
+                    }
+                    
+                    //$max_basis_weekly[$generic_name_string] = ($is_otc)? $max_weekly: $max_monthly;
+                    //$max_bas is_ new = ($is_otc)? $max_weekly: $max_monthly;
+                    if(isset($max_basis_weekly[$generic_name_string])) {
+                        if($max_basis_weekly[$generic_name_string] > $max_weekly){
+                            $max_basis_weekly[$generic_name_string] = $max_weekly;
+                        }
+                    } else {
+                        $max_basis_weekly[$generic_name_string] = $max_weekly;
+                    }
+
+                    if(isset($max_basis_monthly[$generic_name_string])) {
+                        if($max_basis_monthly[$generic_name_string] > $max_monthly){
+                            $max_basis_monthly[$generic_name_string] = $max_monthly;
+                        }
+                    } else {
+                        $max_basis_monthly[$generic_name_string] = $max_monthly;
+                    }
+                    
+                }
+            }
+
+            
+            $result = $mysqli_2->query($transaction_query);
             while($row = mysqli_fetch_array($result))
             {
                 $counter++;
                 $transaction_date = $row['trans_date'];
                 $ddd = $row['ddd'];
+                
                 $company = ucfirst($row['company']);
                 $branch = ucfirst($row['branch']);
-
-                $vat_exempt_price = $row['vat_exempt_price'];
-                $discount_price = $row['discount_price'];
-                $payable_price = $row['payable_price'];
-
-                
-                $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
-                $vat_exempt_price = $formatter->format($vat_exempt_price);
-                $discount_price = $formatter->format($discount_price);
-                $payable_price = $formatter->format($payable_price);
-                
                 $business_type = $row['business_type'];
+
+                $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
+
+                $vat_exempt_price = $formatter->format($row['vat_exempt_price']);
+                $discount_price = $formatter->format($row['discount_price']);
+                $payable_price = $formatter->format($row['payable_price']);
+                
+                
+                if(validate_date_month($ddd, "-1")){
+                    $recent = "non-recent";
+                } else {
+
+                    $recent = "recent";
+                }
                 
                 if($business_type == "pharmacy"){
                     $generic_name_collective = $row['generic_name'];
                     $generic_names = explode(',', $generic_name_collective);
                     $generic_name_string = "";
                     $ingredient_dosage_string = "";
-                    $compound_dosage_string = "";
                     $brand = ucfirst($row['brand']);
                     $dose = $row['dose'];
                     $unit = $row['unit'];
+                    $is_otc = ($row['is_otc'] == '1') ? true: false;
                     $quantity = $row['quantity'];
                     $total_dosage = $dose * $quantity;
 
@@ -84,81 +164,71 @@
                     $max_weekly = $row['max_weekly'];
                     
                     $count_generic_names=count($generic_names);
-                    
-                    if (array_key_exists($generic_name_collective, $compound_dosage))
-                    {
-                        $compound_dosage[$generic_name_collective] += $total_dosage;
-                    }
-                    else
-                    {
-                        $compound_dosage[$generic_name_collective] = $total_dosage;
-                    }
-                    $idd = $compound_dosage[$generic_name_collective];
-
-                    $generic_name_collective_string = "$generic_name_collective (Dosage: $idd)";
+                    sort($generic_names);
 
                     for( $i = 0 ; $i < $count_generic_names ; $i++ )
                     {
                         $generic_name = $generic_names[$i];
-
-                        if (array_key_exists($generic_name,$ingredient_dosage))
-                        {
-                            $ingredient_dosage[$generic_name] += $total_dosage;
-                        }
-                        else
-                        {
-                            $ingredient_dosage[$generic_name] = $total_dosage;
-                        }
-
-                        
-                        $id1 = $ingredient_dosage[$generic_name];
-
-                        $generic_name_string .= ucfirst($generic_name) . "($id1)";
+                        $generic_name_string .= ucfirst($generic_name);
                         if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i)
                         {
                             $generic_name_string .= ", ";
                         }
-
+                    }
+                    
+                    if (array_key_exists($generic_name_string, $compound_dosage))
+                    {
+                        $compound_dosage[$generic_name_string] += $total_dosage;
+                    } else {
+                        $compound_dosage[$generic_name_string] = $total_dosage;
                     }
 
-                }
-                if($business_type == "food"){
-                    $desc = $row['desc'];
-                }
-                if($business_type == "transportation"){
-                    $desc = $row['desc'];
-                }
-                if(validate_date_month($ddd, "-1")){
-                    $recent = "non-recent";
-                } else {
-                    $recent = "recent";
-                }
-                
-                ?>
+                    
+                    $max_basis = ($is_otc)? $max_basis_weekly[$generic_name_string]: $max_basis_monthly[$generic_name_string];
 
-                <div class="row _transaction-record collapse-header <?php echo $recent;?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
-                    <div class="col col-12 d-none d-md-block">
-                        <?php echo "$company - $branch" ?>
-                    </div>
-                    <?php 
-                    if($business_type == "pharmacy"){
-                        ?>
+                    // Validate if this generic_name is maxed for the month
+                    if($compound_dosage_recent[$generic_name_string] >= $max_basis && $recent == "recent"){
+                        $maxed = "flagged";
+                    } else {
+                        $maxed = "";
+                    }
+
+                    /*
+                    if($recent == "recent") {
+                        if (array_key_exists($generic_name_string, $compound_dosage))
+                        {
+                            //echo $generic_name_string . " " . $compound_dosage[$generic_name_string];
+                            $compound_dosage[$generic_name_string] += $total_dosage;
+                        } else {
+                            $compound_dosage[$generic_name_string] = $total_dosage;
+                        }
+                    } else
+                    {
+                        $compound_dosage[$generic_name_string] = 0;
+                    }*/
+
+                    ?>
+                    <div class="row _transaction-record collapse-header <?php echo "$recent $maxed";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                        <div class="col col-12 d-none d-md-block">
+                            <?php echo "$company - $branch" ?>
+                        </div>
                         <div class="col col-12">
                             <?php echo $transaction_date ?>
                         </div>
-                        
+                        <!-- <> -->
                         <div class="col col-12">
-                            [<?php echo $generic_name_string; ?>]
+                            <?php echo "<b>(Dosage on this purchase: $total_dosage)</b>"; ?>
+                            <?php echo "<br><b>(Accumulated: ".$compound_dosage_recent[$generic_name_string].")</b>"; ?>
+                            <?php echo "<br><b>(Max: ".$max_basis.")</b>"; ?>
                         </div>
+                        <!-- </> -->
                         
                         <div class="col col-12">
-                            [<?php echo $generic_name_collective_string ; ?>]
+                            <?php echo "[ $generic_name_string ] <br>"?>
                         </div>
 
-                        <div class="col col-12 ">
-                            <?php echo "$brand "."$dose"."$unit @ $quantity"."pcs" . "(Dosage in this purchase: $total_dosage)"?>
-                            <br>
-                            [Monthly: <?php echo $max_monthly?>] [Weekly: <?php echo $max_weekly?>]
+                        <div class="col col-12">
+                            <b><?php echo "$brand "."$dose"."$unit @ $quantity"."pcs"?></b>
                         </div>
                         <div id="collapse_<?php echo $counter?>" class="col collapse" aria-labelledby="heading<?php echo $counter?>">
                             <div class="row">
@@ -188,11 +258,17 @@
                                 </div>
                             </div>
                         </div>
-                        <?php 
-                    }
-                    if($business_type == "food" || $business_type == "transportation" ){
-                        ?>
                         
+                    </div>
+                    <?php 
+                }
+                if($business_type == "food" || $business_type == "transportation" ){
+                    $desc = $row['desc'];
+                    ?>
+                    <div class="row _transaction-record collapse-header <?php echo "$recent $maxed";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                        <div class="col col-12 d-none d-md-block">
+                            <?php echo "$company - $branch" ?>
+                        </div>
                         <div class="col col-12">
                             <?php echo $desc ?>
                         </div>
@@ -231,58 +307,10 @@
                                 </div>
                             </div>
                         </div>
-                        <?php
-                    }
-                    ?>
-                </div>
-                <?php
-            }
-            if($business_type == "pharmacy"){
-                ?>
-            
-                <div class="row _transaction-record collapse-header flagged" data-toggle="collapse" aria-expanded="true" aria-controls="collapse_zzz" data-target="#collapse_zzz">
-                    <div class="col col-12 d-none d-md-block">
-                        Watsons - Portal, GMA, Cavite
-                    </div>
-                    <div class="col col-12">
-                        2020-09-02 14:10:45
-                    </div>
                         
-                    <div class="col col-12">
-                        [Ibuprofen, Paracetamol]
                     </div>
-
-                    <div class="col col-12 ">
-                        Alaxan 500mg @ 10pcs
-                    </div>
-                    <div class="col collapse show" style="" id="collapse_zzz" aria-labelledby="headingzzz">
-                        <div class="row">
-                            <div class="col col-6">
-                                VAT Exempt Price:
-                            </div>
-                            <div class="col col-6 _transaction-record-right">
-                                ₱1,800.00
-                            </div>
-                            <div class="col col-6">
-                                Discounted Price:
-                            </div>
-                            <div class="col col-6 _transaction-record-right">
-                                (₱360.00)
-                            </div>
-                        </div>
-                    </div>     
-                    <div class="col col-12">
-                        <div class="row">
-                            <div class="col col-6">
-                                Amount to pay:
-                            </div>
-                            <div class="col col-6 _transaction-record-right">
-                                ₱1,440.00
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php
+                    <?php
+                }
             }
         } else {echo "<div class='col col-md-8 text-center mx-auto mt-5'>No $business_type discount(s) <br> recorded yet for this user</div>";}
         mysqli_close($mysqli_2);
