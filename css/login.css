@@ -61,7 +61,7 @@ body{
     cursor: pointer;
 } 
 
-.box input[type= "submit"]:hover{
+.box input[type= "submit"]:hover, .box input[type= "submit"]:focus{
     background: #2ecc71;
 }
 

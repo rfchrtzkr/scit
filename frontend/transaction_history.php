@@ -40,16 +40,12 @@
             <div class="title">
                 TRANSACTIONS HISTORY
             </div>
-            <div class="transaction transaction-history scrollbar-black">
+            <div class="transaction-history scrollbar-black">
         <?php
         
         if($row_count != 0)
         {
             $counter = 0;
-            include('../backend/read_pharmacy_transactions.php');
-
-
-            
             $result = $mysqli_2->query($transaction_query);
             while($row = mysqli_fetch_array($result))
             {
@@ -76,10 +72,12 @@
                 }
                 
                 if($business_type == "pharmacy"){
-                    $generic_name_collective = $row['generic_name'];
+                    
+                    $generic_name_collective = str_replace('  ', ' ', $row['generic_name']);
+                    $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
                     $generic_names = explode(',', $generic_name_collective);
                     $generic_name_string = "";
-                    $brand = ucfirst($row['brand']);
+                    $brand = ucwords($row['brand']);
                     $dose = $row['dose'];
                     $unit = $row['unit'];
                     $is_otc = ($row['is_otc'] == '1') ? true: false;
@@ -95,7 +93,7 @@
                     for( $i = 0 ; $i < $count_generic_names ; $i++ )
                     {
                         $generic_name = $generic_names[$i];
-                        $generic_name_string .= ucfirst($generic_name);
+                        $generic_name_string .= ucwords($generic_name);
                         if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i)
                         {
                             $generic_name_string .= ", ";
@@ -103,10 +101,10 @@
                     }
 
                     
-                    $max_basis = ($is_otc)? $max_basis_weekly[$generic_name_string]: $max_basis_monthly[$generic_name_string];
+                    $max_basis = ($is_otc)? $_SESSION['max_basis_weekly'][$generic_name_string]: $_SESSION['max_basis_monthly'][$generic_name_string];
 
                     // Validate if this generic_name is maxed for the month
-                    if($compound_dosage_recent[$generic_name_string] >= $max_basis && $recent == "recent"){
+                    if($_SESSION['compound_dosage_recent'][$generic_name_string] >= $max_basis && $recent == "recent"){
                         $maxed = "flagged";
                     } else {
                         $maxed = "";
@@ -123,7 +121,7 @@
                         <!-- <> -->
                         <div class="col col-12">
                             <?php echo "<b>(Dosage on this purchase: $total_dosage)</b>"; ?>
-                            <?php echo "<br><b>(Accumulated: ".$compound_dosage_recent[$generic_name_string].")</b>"; ?>
+                            <?php echo "<br><b>(Accumulated: ".$_SESSION['compound_dosage_recent'][$generic_name_string].")</b>"; ?>
                             <?php echo "<br><b>(Max: ".$max_basis.")</b>"; ?>
                         </div>
                         <!-- </> -->

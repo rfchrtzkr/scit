@@ -8,8 +8,8 @@
     } else {
         $logo = "../resources/images/unknown_m_f.png";
     }
+    
 ?>
-
     <div class="col col-sm-10 contents" id="body">
         <div id="home">
             <div class="logo">
@@ -29,4 +29,6 @@
 <?php
     include('foot.php');
 ?>
+<?php $myJSON = json_encode($_SESSION); ?>
+<script> console.log(<?php echo $myJSON; ?>); </script>
 
