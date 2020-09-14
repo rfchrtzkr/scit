@@ -262,4 +262,23 @@
         }
     }
 
+    function arrange_generic_name($generic_name_in)
+    {   
+        $generic_name_collective = str_replace('  ', ' ', $generic_name_in);
+        $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
+        $generic_names = explode(',', $generic_name_collective);
+        $generic_name_string = "";
+        $count_generic_names=count($generic_names);
+        sort($generic_names);
+
+        for( $i = 0 ; $i < $count_generic_names ; $i++ ){
+            $generic_name = $generic_names[$i];
+            $generic_name_string .= ucwords($generic_name);
+            if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i) {
+                $generic_name_string .= ", ";
+            }
+        }
+        return $generic_name_string;
+    }
+
 ?>

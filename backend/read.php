@@ -47,5 +47,4 @@
     }
 ?>
 
-<?php $myJSON = json_encode($_SESSION); ?>
-<script> console.log(<?php echo $myJSON; ?>); </script>
+<script> console.log(<?php echo json_encode($_SESSION); ?>); </script>

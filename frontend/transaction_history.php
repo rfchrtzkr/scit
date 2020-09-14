@@ -12,9 +12,9 @@
 
         if($business_type == "pharmacy"){
             $transaction_query = "SELECT `member_id`, `trans_date`, date(trans_date) `ddd`, `company_name` `company`, `branch`, `business_type`, `company_tin`,
-                                    `generic_name`, `brand`, `dose`, `is_otc`, `max_monthly`, `max_weekly`, `unit`, `quantity`,
+                                    `desc_nondrug`, `generic_name`, `brand`, `dose`, `is_otc`, `max_monthly`, `max_weekly`, `unit`, `quantity`,
                                     `vat_exempt_price`, `discount_price`, `payable_price`
-                                    FROM `view_pharma_transactions`
+                                    FROM `view_pharma_transactions_all`
                                     WHERE `osca_id` = '$selected_id' AND date(trans_date) >= (LEFT(NOW() - INTERVAL 3 MONTH,10))
                                     ORDER BY `trans_date`;";
         }
@@ -72,67 +72,61 @@
                 }
                 
                 if($business_type == "pharmacy"){
-                    
-                    $generic_name_collective = str_replace('  ', ' ', $row['generic_name']);
-                    $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
-                    $generic_names = explode(',', $generic_name_collective);
-                    $generic_name_string = "";
-                    $brand = ucwords($row['brand']);
-                    $dose = $row['dose'];
-                    $unit = $row['unit'];
-                    $is_otc = ($row['is_otc'] == '1') ? true: false;
-                    $quantity = $row['quantity'];
-                    $total_dosage = $dose * $quantity;
-
-                    $max_monthly = $row['max_monthly'];
-                    $max_weekly = $row['max_weekly'];
-                    
-                    $count_generic_names=count($generic_names);
-                    sort($generic_names);
-
-                    for( $i = 0 ; $i < $count_generic_names ; $i++ )
-                    {
-                        $generic_name = $generic_names[$i];
-                        $generic_name_string .= ucwords($generic_name);
-                        if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i)
-                        {
-                            $generic_name_string .= ", ";
+                    $desc_nondrug = $row['desc_nondrug'];
+                    $maxed = "";
+                    if ($desc_nondrug == "") {
+                        $brand = ucwords($row['brand']);
+                        $dose = $row['dose'];
+                        $unit = $row['unit'];
+                        $is_otc = ($row['is_otc'] == '1') ? true: false;
+                        $quantity = $row['quantity'];
+                        $total_dosage = $dose * $quantity;
+                        $max_monthly = $row['max_monthly'];
+                        $max_weekly = $row['max_weekly'];
+                        $generic_name_string = arrange_generic_name($row['generic_name']);
+                        $max_basis = ($is_otc)? $_SESSION['max_basis_weekly'][$generic_name_string]: $_SESSION['max_basis_monthly'][$generic_name_string];
+                        // Validate if this generic_name is maxed for the month
+                        if($_SESSION['compound_dosage_recent'][$generic_name_string] >= $max_basis && $recent == "recent"){
+                            $maxed = "flagged";
+                        } else {
+                            $maxed = "";
                         }
-                    }
-
-                    
-                    $max_basis = ($is_otc)? $_SESSION['max_basis_weekly'][$generic_name_string]: $_SESSION['max_basis_monthly'][$generic_name_string];
-
-                    // Validate if this generic_name is maxed for the month
-                    if($_SESSION['compound_dosage_recent'][$generic_name_string] >= $max_basis && $recent == "recent"){
-                        $maxed = "flagged";
+                        ?>
+                        <div class="row _transaction-record collapse-header <?php echo "$recent $maxed";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                            <div class="col col-12 d-md-block">
+                                <?php echo "$company - $branch" ?>
+                            </div>
+                            <div class="col col-12">
+                                <?php echo $transaction_date ?>
+                            </div>
+                            <div class="col col-12">
+                                <?php echo "<b>(Dosage on this purchase: $total_dosage)</b>"; ?>
+                                <?php echo "<br><b>(Accumulated: ".$_SESSION['compound_dosage_recent'][$generic_name_string].")</b>"; ?>
+                                <?php echo "<br><b>(Max: ".$max_basis.")</b>"; ?>
+                            </div>
+                            <div class="col col-12">
+                                <?php echo "[ $generic_name_string ] <br>"?>
+                            </div>
+                            <div class="col col-12">
+                                <b><?php echo "$brand "."$dose"."$unit @ $quantity"."pcs"?></b>
+                            </div>
+                        <?php
                     } else {
-                        $maxed = "";
-                    }
-
-                    ?>
-                    <div class="row _transaction-record collapse-header <?php echo "$recent $maxed";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
-                        <div class="col col-12 d-none d-md-block">
-                            <?php echo "$company - $branch" ?>
-                        </div>
-                        <div class="col col-12">
-                            <?php echo $transaction_date ?>
-                        </div>
-                        <!-- <> -->
-                        <div class="col col-12">
-                            <?php echo "<b>(Dosage on this purchase: $total_dosage)</b>"; ?>
-                            <?php echo "<br><b>(Accumulated: ".$_SESSION['compound_dosage_recent'][$generic_name_string].")</b>"; ?>
-                            <?php echo "<br><b>(Max: ".$max_basis.")</b>"; ?>
-                        </div>
-                        <!-- </> -->
+                        ?>
+                        <div class="row _transaction-record collapse-header <?php echo "$recent $maxed";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                            <div class="col col-12 d-md-block">
+                                <?php echo "$company - $branch" ?>
+                            </div>
+                            <div class="col col-12">
+                                <?php echo $transaction_date ?>
+                            </div>
+                            <div class="col col-12">
+                                <b><?php echo $desc_nondrug?></b>
+                            </div>
+                        <?php
                         
-                        <div class="col col-12">
-                            <?php echo "[ $generic_name_string ] <br>"?>
-                        </div>
-
-                        <div class="col col-12">
-                            <b><?php echo "$brand "."$dose"."$unit @ $quantity"."pcs"?></b>
-                        </div>
+                    }
+                    ?>
                         <div id="collapse_<?php echo $counter?>" class="col collapse" aria-labelledby="heading<?php echo $counter?>">
                             <div class="row">
                                 <div class="col col-6">
@@ -169,7 +163,7 @@
                     $desc = $row['desc'];
                     ?>
                     <div class="row _transaction-record collapse-header <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
-                        <div class="col col-12 d-none d-md-block">
+                        <div class="col col-12 d-md-block">
                             <?php echo "$company - $branch" ?>
                         </div>
                         <div class="col col-12">

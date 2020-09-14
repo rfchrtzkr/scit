@@ -1,5 +1,6 @@
 <?php 
 
+include_once('../backend/session.php');
 $_SESSION['compound_dosage_recent'] = null;
 $_SESSION['max_basis_weekly'] = null;
 $_SESSION['max_basis_monthly'] = null;

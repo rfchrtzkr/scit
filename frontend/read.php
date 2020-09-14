@@ -1,6 +1,4 @@
 <?php 
-
-
     include('../backend/conn_members.php');
     include('../backend/php_functions.php');
     
@@ -26,59 +24,44 @@
             </div>
             <div class="member-details">
                 <div class="row">
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Lastname
-                    </div>
                     <div class="col col-md-12">
-                        <?php echo $last_name;?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Firstname
-                    </div>
-                    <div class="col col-md-12">
-                        <?php echo $first_name;?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Middlename
-                    </div>
-                    <div class="col col-md-12">
+                        <?php echo $last_name;?>,
+                        <?php echo $first_name;?> 
                         <?php echo $middle_name;?>
                     </div>
+                    <div class="col col-md-12 d-none d-md-block _label">
+                        (Lastname, Firstname, Middlename)
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Birthdate
-                    </div>
                     <div class="col col-md-12">
                         <?php echo $bdate;?>
                     </div>
+                    <div class="col col-md-12 d-none d-md-block _label">
+                        Birthdate
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Gender
-                    </div>
-                    
                     <div class="col col-md-12">
                         <?php echo determine_sex($sex2, "display_long"); ?>
                     </div>
+                    <div class="col col-md-12 d-none d-md-block _label">
+                        Gender
+                    </div>
                 </div>
                 <div class="row">
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Contact Number
-                    </div>
                     <div class="col col-md-12">
                         <?php echo $contact_number;?>
                     </div>
+                    <div class="col col-md-12 d-none d-md-block _label">
+                        Contact Number
+                    </div>
                 </div>
                 <div class="row">
+                    <div class="col col-md-12">
+                    </div>
                     <div class="col col-md-12 d-none d-md-block _label">
                         City
-                    </div>
-                    <div class="col col-md-12">
                     </div>
                 </div>
 
@@ -102,7 +85,6 @@
                             }
                         });
                     });
-
                 });
             </script>
             <?php

@@ -1,10 +1,14 @@
             </div>
         </div>
-        <input type="hidden" id="bustype" value="<?php echo $_SESSION['business_type'];?>">
+        <input type="hidden" id="bustype" name="bustype" value="<?php echo $_SESSION['business_type'];?>">
     </body>
 </html>
 
 <script>
+    function reload_home() {
+        //$('#body').load("../frontend/home.php #home");
+    }
+
     $(document).ready(function(){
         $("#read").click(function(){
             var input_nfc = $("#nfc_id").val();
@@ -16,6 +20,7 @@
                     alert(d);
                     $('#body').load("../frontend/home.php #home");
                 }
+                setTimeout(function() { reload_home(); }, 5000);
             });
         });
         $("#transaction").click(function(){

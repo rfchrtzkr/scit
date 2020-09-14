@@ -2,9 +2,9 @@
 .scit {
     position: relative;
     margin: auto;
+    min-width: 600px;
     max-width: 600px;
-    height: 1024px;
-    max-height: 1024px;
+    min-height: 1024px;
     outline: black;
     outline-style: dotted;
 
@@ -37,6 +37,7 @@
     display: flex;
     flex-direction: column;
     
+    
     justify-content: center;
 
 }
@@ -65,7 +66,7 @@ img.logo {
     height: auto;
 }
 .member-picture {
-    width: 100%;
+    width: 50%;
     margin:auto;
 }
 img.avatar{
@@ -74,8 +75,11 @@ img.avatar{
 }
 
 div.foot {
+    
+    margin-top:auto;
     width: 100%;
 }
+
 .footer-date {
     
     width: 95%;
@@ -91,6 +95,7 @@ div.foot {
 
 .member-details > .row {
     margin-bottom: 20px;
+    flex-grow: 1;
 }
 
 
@@ -99,10 +104,7 @@ div.foot {
     outline-color: black;
     background-color: white;
     overflow: auto;
-
-    width: 100%;
-    height: 700px;
-    padding: 20px 0px;
+    flex-grow: 1;
 }
 
 
@@ -111,7 +113,6 @@ div.foot {
     background-color: white;
     color: midnightblue;
 
-    width: 100%;
     height: 130px;
     padding: 20px 0px;
     -webkit-box-shadow: inset 0px 9px 15px 0px rgba(0,0,0,0.17);
@@ -166,16 +167,19 @@ div.foot {
     font-weight: bold;
     text-align: center;
     text-decoration-line: underline;
-
-    width: 100%;
-    margin-bottom: 20px;
+    padding-bottom: 20px;
 }
 
 ._drug-name {
     font-weight: bold;
 }
 
-
+.invalid-list {
+    max-height: 15rem;
+    display: block;
+    overflow: auto;
+    list-style-type: none; 
+}
 
 
 
@@ -203,3 +207,77 @@ scroll bar
     scrollbar-color: #000 #F5F5F5;
     scrollbar-width: thin;
 }
+
+ /* The Modal (background) */
+.modal {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.80); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  top: 30%;
+  border: 1px solid #888;
+  width: 60%; /* Could be more or less, depending on screen size */
+
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+/* Modal Header */
+.modal-header {
+padding: 2px 16px;
+background-color: #5cb85c;
+color: white;
+}
+
+/* Modal Footer */
+.modal-footer {
+padding: 2px 16px;
+background-color: #5cb85c;
+color: white;
+}
+
+/* Modal Content */
+.modal-content {
+position: relative;
+background-color: #fefefe;
+margin: auto;
+padding: 0;
+border: 1px solid #888;
+width: 80%;
+box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+animation-name: animatetop;
+animation-duration: 0.7s;
+}
+
+/* Add Animation */
+@keyframes animatetop {
+from {opacity: 0}
+to {opacity: 1}
+} 

@@ -3,6 +3,12 @@
     include('../backend/conn_members.php');
     include('../backend/php_functions.php');
     
+    $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
+    $total_discount = 0;
+    $total_amount_to_pay = 0;
+    $transaction_date = "";
+    $flagged_items = [];
+    
     if(isset($_SESSION['osca_id'])) {
         // -----------delete--------------
         ?>
@@ -38,19 +44,14 @@
             <?php
             if($row_count != 0)
             {
-                $counter = 0;
-                $total_discount = 0;
-                $total_amount_to_pay = 0;
-                $transaction_date = "";
-
                 include('../backend/new_transaction.php');
-
-                $compound_dosage_transaction = [];
-                $max_basis_weekly = [];
-                $max_basis_monthly = [];
                 
                 // get total of compound dosage in this transaction
                 if($business_type == "pharmacy"){
+
+                    $compound_dosage_transaction = [];
+                    $max_basis_weekly = [];
+                    $max_basis_monthly = [];
                     foreach($transaction as $row => $item){
                         $brand = ucwords($item['brand']);
                         $dose = $item['dose'];
@@ -101,8 +102,6 @@
                 }
 
                 foreach($transaction as $row => $item){
-                    $counter++;
-                    $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
                     $transaction_date = $item['trans_date'];
                     $vat_exempt_price = $formatter->format($item['vat_exempt_price']);
                     $discount_price = $formatter->format($item['discount_price']);
@@ -153,10 +152,12 @@
                         
                         if($compound_total >= $max_basis){
                             $maxed = "flagged";
+                            $flagged_items[] = $item;
                         } else {
                             $maxed = "";
                         }
-
+                    
+                        // end of conditions
                         ?>
                         <div class="row _transaction-record <?php echo $maxed;?>">
                             <div class="col col-12">
@@ -193,7 +194,7 @@
                                         Amount to pay:
                                     </div>
                                     <div class="col col-6 _transaction-record-right">
-                                        <?php echo $payable_price ?>
+                                        <b><?php echo $payable_price ?></b>
                                     </div>
                                 </div>
                             </div>
@@ -228,7 +229,7 @@
                                         Amount to pay:
                                     </div>
                                     <div class="col col-6 _transaction-record-right">
-                                        <?php echo $payable_price ?>
+                                        <b><?php echo $payable_price ?></b>
                                     </div>
                                 </div>
                             </div>
@@ -255,7 +256,7 @@
                     Amount to Pay
                     </div>
                     <div class="col col-md-4 _transaction-record-right">
-                        <?php echo $formatter->format($total_amount_to_pay);?>
+                        <b><?php echo $formatter->format($total_amount_to_pay);?></b>
                     </div>
                 </div>
                 <div class="row">
@@ -267,30 +268,78 @@
                 </div>  
         </div>
         </div>
-        <div class="foot">
-            <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
-        </div>
+        <?php
+            if(count($flagged_items) > 0) {
+                $counter = 0;
+                ?>
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        </div>
+                        <div class="modal-body">
+                            <p>Some items are invalid:</p>
+                            <ul class="invalid-list scrollbar-black">
+                                <?php
+                                    foreach($flagged_items as $row => $item){
+                                        $counter++;
+
+                                        $brand = ucwords($item['brand']);
+                                        $dose = $item['dose'];
+                                        $unit = $item['unit'];
+                                        $quantity = $item['quantity'];
+                                        
+                                        echo "<li>Item #$counter: $brand $dose"."$unit @ $quantity pcs</li>";
+                                        
+                                    }
+                                ?>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div> 
+                </div>
+                <?php
+            } else {?>
+                <div class="foot">
+                    <button type="button" class="btn btn-block btn-success btn-lg" id="accept">Accept</button>
+                </div>
+                <?php
+            } ?>
+            <div class="foot">
+                <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
+            </div>
+            
             
         <script>
+            
+            var modal = document.getElementById("myModal");
+            
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            } 
+
             $(document).ready(function(){
 
                 $("#return").click(function(){
                     $('#body').load("../frontend/home.php #home");
                 });
             });
+
+
+            
+            console.log("After encode:");
+            console.log(<?php echo json_encode($_SESSION); ?>);
+            console.log(<?php echo json_encode($compound_dosage_transaction); ?>);
+            console.log("compound_total:");
+            console.log(<?php echo $compound_total; ?>);
+            console.log("transaction:");
+            console.log(<?php echo json_encode($transaction); ?>);
         </script>
         <?php
     } else {
-        echo "false2";
+        echo "false";
     }
-
 ?>
-
-<!-- verify if this is correct, most probably yes-->
-<script>
-    console.log("After encode:");
-    console.log(<?php echo json_encode($_SESSION); ?>);
-    console.log(<?php echo json_encode($compound_dosage_transaction); ?>);
-    console.log("compound_total:");
-    console.log(<?php echo $compound_total; ?>);
-</script>
