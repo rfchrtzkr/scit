@@ -1,86 +1,163 @@
-body{
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap');
+
+* {
     margin: 0;
     padding: 0;
-    background: #CFFFE5 ;
+    box-sizing: border-box;
 }
 
-.box{
-    width: 300px;
-    padding: 40px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    border-radius: 20px 20px 0 0;
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #ecf0f1;
+}
+
+.content {
+    background-color: #fff;
+    border-radius: 15px;
+    width: 960px;
+    height: 50%;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    display: flex;
+}
+
+.first-column {
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    background-color: #7CCFCC;
+    height: 100%;
+    width: 40%;
+    align-items: center;
+}
+
+.second-column {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: capitalize;
     text-align: center;
-    -webkit-box-shadow: 2px 25px 29px -4px rgba(0,0,0,0.58);
-    -moz-box-shadow: 2px 25px 29px -4px rgba(0,0,0,0.58);
-    box-shadow: 2px 25px 29px -4px rgba(0,0,0,0.58);
 }
-.box h1 {
-    color: white;
-    text-transform: uppercase;
-    font-weight: 500;
+
+.title-primary {
+    color: #fff;
 }
-.box input[type="text"], .box input[type="password"]{
-    border: 0;
-    background: none;
+
+.title-secondary {
+    color: #707070;
+    padding-bottom: 15px;
+}
+
+.description {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 30px;
+}
+
+.description-primary {
+    text-align: center;
+    color: #fff;
+}
+
+.img-logo {
+    width: 100px;
+    height: 100px;
+    margin: 1em;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+
+.form input {
+    height: 45px;
+    border: none;
+    width: 100%;
+    background-color: #ecf0f1;
+}
+
+:not(output):-moz-ui-invalid {
+    box-shadow: none;
+}
+
+.label-input {
+    border-radius: 15px;
+    background-color: #ecf0f1;
+    padding-right: 25px;
+    display: flex;
+    align-items: center;
+    margin: 8px;
+}
+
+.icon-modify {
+    color: #7f8c8d;
+    padding: 0 8px;
+}
+
+.forgot-password {
     display: block;
-    margin: 20px auto;
-    text-align: center;
-    border: 2px solid #3498db;
-    padding: 14px 10px;
-    width: 200px;
-    outline: none;
-    color: #191919;
-    border-radius: 24px;
-    transition: 0.25s;
-} 
-
-
-.box input[type="text"]:focus, .box input[type="password"]:focus{
-    width: 280px;
-    border-color: #2ecc71;
+    color: #707070;
+    padding-right: 12px;
+    font-size: 12px;
+    text-align: end;
+    text-decoration: none;
 }
 
-
-.box input[type="submit"]{
-    border: 0;
-    background: none;
-    display: block;
-    margin: 20px auto;
-    text-align: center;
-    border: 2px solid #2ecc71;
-    width: 150px;
-    padding: 14px 10px;
-    outline: none;
-    color: #191919;
-    border-radius: 24px;
-    transition: 0.25s;
-    cursor: pointer;
-} 
-
-.box input[type= "submit"]:hover, .box input[type= "submit"]:focus{
-    background: #2ecc71;
-}
-
-a:link{
-    cursor: pointer;
-    text-decoration-line: none;
-    color: #3498db;
-}
-a:visited{
-    color: #3498db;
-}/*
-a:hover
-a:active
-*/
-.icon {
-    width:100%;
-}
-  
 .message{
+    display: block;
+    margin-top: 1em;
     color: red;
+    align-self: center;
+    font-size: 12px;
     font-weight: bold;
 } 
+
+.btn {
+    border-radius: 15px;
+    color: #fff;
+    font-size: 10px;
+    padding: 10px 50px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 150px;
+    align-self: center;
+    border: none;
+    margin-top: 1rem;
+}
+
+.btn-second {
+    background-color: #FFAA91;
+    border: 1px solid #FFAA91;
+    transition: background-color .5s;
+}
+
+.btn-second:hover {
+    background-color: #fff;
+    border: 1px solid #FFAA91;
+    color: #FFAA91;
+}
+
+.footer {
+    font-size: 10px;
+    font-weight: 300;
+    line-height: 30px;
+    color: #707070;
+}
