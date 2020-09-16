@@ -1,38 +1,21 @@
 <?php
     include('../backend/session.php');
-    include('../backend/conn_members.php');
     include('../backend/php_functions.php');
     
     $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
     $total_discount = 0;
     $total_amount_to_pay = 0;
     $transaction_date = "";
+    $clerk = "";
     $flagged_items = [];
     
     if(isset($_SESSION['osca_id'])) {
+        $business_type = $_SESSION['business_type'];
         // -----------delete--------------
         ?>
         <script> console.log("Before encode:");console.log(<?php echo json_encode($_SESSION); ?>); </script>
         <?php
         // -----------delete--------------
-        $selected_id = $_SESSION['osca_id'];
-        $business_type = $_SESSION['business_type'];
-        $company_tin = $_SESSION['company_tin'];
-        if($business_type == "pharmacy"){
-            $transaction_query = "SELECT `member_id`, `trans_date`, date(trans_date) `ddd`, `company_name` `company`, `branch`, `business_type`, `company_tin`,
-                                    `generic_name`, `brand`, `dose`, `is_otc`, `max_monthly`, `max_weekly`, `unit`, `quantity`,
-                                    `vat_exempt_price`, `discount_price`, `payable_price`
-                                    FROM `view_pharma_transactions`
-                                    WHERE `osca_id` = '$selected_id' AND date(trans_date) >= (LEFT(NOW() - INTERVAL 3 MONTH,10))
-                                    ORDER BY `trans_date`;";
-        }
-        if($business_type == "food"){
-        }
-        if($business_type == "transportation"){
-        }
-        include('../backend/conn_members.php');
-        $result = $mysqli_2->query($transaction_query);
-        $row_count = mysqli_num_rows($result);
         ?>
         <div class="title">
             TRANSACTION
@@ -40,69 +23,59 @@
         <div class="title user">
             <?php echo $_SESSION['sr_full_name']; ?>
         </div>
-        <div class="transaction scrollbar-black">
+        <div class="transaction scrollbar-black" id="trans123">
             <?php
-            if($row_count != 0)
             {
+                $counter = 0;
                 include('../backend/new_transaction.php');
                 
                 // get total of compound dosage in this transaction
                 if($business_type == "pharmacy"){
-
                     $compound_dosage_transaction = [];
                     $max_basis_weekly = [];
                     $max_basis_monthly = [];
                     foreach($transaction as $row => $item){
-                        $brand = ucwords($item['brand']);
-                        $dose = $item['dose'];
-                        $quantity = $item['quantity'];
-                        $generic_name_string = "";
+                        if (!isset($item['desc'])) {
+                            $brand = ucwords($item['brand']);
+                            $dose = $item['dose'];
+                            $quantity = $item['quantity'];
+                            $total_dosage = $dose * $quantity;
 
-                        $max_monthly = $item['max_monthly'];
-                        $max_weekly = $item['max_weekly'];
-                        $total_dosage = $dose * $quantity;
+                            $max_monthly = $item['max_monthly'];
+                            $max_weekly = $item['max_weekly'];
 
-                        $generic_name_collective = str_replace('  ', ' ', $item['generic_name']);
-                        $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
-                        $generic_names = explode(',', $generic_name_collective);
-                        $count_generic_names=count($generic_names);
-                        sort($generic_names);
-
-                        for( $i = 0 ; $i < $count_generic_names ; $i++ ){
-                            $generic_name = $generic_names[$i];
-                            $generic_name_string .= ucwords($generic_name);
-                            if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i)
-                            {
-                                $generic_name_string .= ", ";
-                            }
-                        }
-                        
-                        if(isset($max_basis_weekly[$generic_name_string])) {
-                            if($max_basis_weekly[$generic_name_string] > $max_weekly){
+                            $generic_name_string = $item['generic_name'];
+                            
+                            if(isset($max_basis_weekly[$generic_name_string])) {
+                                if($max_basis_weekly[$generic_name_string] > $max_weekly){
+                                    $max_basis_weekly[$generic_name_string] = $max_weekly;
+                                }
+                            } else {
                                 $max_basis_weekly[$generic_name_string] = $max_weekly;
                             }
-                        } else {
-                            $max_basis_weekly[$generic_name_string] = $max_weekly;
-                        }
-                        
-                        if(isset($max_basis_monthly[$generic_name_string])) {
-                            if($max_basis_monthly[$generic_name_string] > $max_monthly){
+                            
+                            if(isset($max_basis_monthly[$generic_name_string])) {
+                                if($max_basis_monthly[$generic_name_string] > $max_monthly){
+                                    $max_basis_monthly[$generic_name_string] = $max_monthly;
+                                }
+                            } else {
                                 $max_basis_monthly[$generic_name_string] = $max_monthly;
                             }
-                        } else {
-                            $max_basis_monthly[$generic_name_string] = $max_monthly;
-                        }
-                        
-                        if (array_key_exists($generic_name_string, $compound_dosage_transaction)){
-                            $compound_dosage_transaction[$generic_name_string] += $total_dosage;
-                        } else {
-                            $compound_dosage_transaction[$generic_name_string] = $total_dosage;
+                            
+                            if (array_key_exists($generic_name_string, $compound_dosage_transaction)){
+                                $compound_dosage_transaction[$generic_name_string] += $total_dosage;
+                            } else {
+                                $compound_dosage_transaction[$generic_name_string] = $total_dosage;
+                            }
                         }
                     }
                 }
 
+                // Populate transactions list from $transactions array
                 foreach($transaction as $row => $item){
+                    $counter++;
                     $transaction_date = $item['trans_date'];
+                    $clerk = $item['clerk'];
                     $vat_exempt_price = $formatter->format($item['vat_exempt_price']);
                     $discount_price = $formatter->format($item['discount_price']);
                     $payable_price = $formatter->format($item['payable_price']);
@@ -111,125 +84,124 @@
                     $total_amount_to_pay += (int)$item['payable_price'];
                     
                     if($business_type == "pharmacy"){
-                        $brand = ucwords($item['brand']);
-                        $dose = $item['dose'];
-                        $unit = $item['unit'];
-                        $is_otc = ($item['is_otc'] == '1') ? true: false;
-                        $quantity = $item['quantity'];
+                        if (!isset($item['desc'])) {
+                            $brand = ucwords($item['brand']);
+                            $dose = $item['dose'];
+                            $unit = $item['unit'];
+                            $quantity = $item['quantity'];
+                            $total_dosage = $dose * $quantity;
 
-                        $max_monthly = $item['max_monthly'];
-                        $max_weekly = $item['max_weekly'];
-                        
-                        $generic_name_string = "";
-                        $total_dosage = $dose * $quantity;
-                        $generic_name_collective = str_replace('  ', ' ', $item['generic_name']);
-                        $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
-                        $generic_names = explode(',', $generic_name_collective);
-                        
-                        $count_generic_names=count($generic_names);
-                        sort($generic_names);
+                            $is_otc = ($item['is_otc'] == '1') ? true: false;
+                            $max_monthly = $item['max_monthly'];
+                            $max_weekly = $item['max_weekly'];
+                            $generic_name_string = $item['generic_name'];
 
-                        for( $i = 0 ; $i < $count_generic_names ; $i++ ){
-                            $generic_name = $generic_names[$i];
-                            $generic_name_string .= ucwords($generic_name);
-                            if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i)
-                            {
-                                $generic_name_string .= ", ";
+                            $compound_total = 0;
+
+
+                            // check if item[compound] exists in session[compounds_recent]
+                            if (array_key_exists($generic_name_string, $_SESSION['compound_dosage_recent'])){
+                                $compound_total = $compound_dosage_transaction[$generic_name_string] + $_SESSION['compound_dosage_recent'][$generic_name_string];
+                                $max_basis = ($is_otc)? $_SESSION['max_basis_weekly'][$generic_name_string]: $_SESSION['max_basis_monthly'][$generic_name_string];
+                            } else {
+                                $compound_total = $compound_dosage_transaction[$generic_name_string];
+                                $max_basis = ($is_otc)? $max_basis_weekly[$generic_name_string]: $max_basis_monthly[$generic_name_string];
                             }
-                        }
-
-                        $compound_total = 0;
-
-
-                         // check if item[compound] exists in session[compounds_recent]
-                        if (array_key_exists($generic_name_string, $_SESSION['compound_dosage_recent'])){
-                            $compound_total = $compound_dosage_transaction[$generic_name_string] + $_SESSION['compound_dosage_recent'][$generic_name_string];
-                            $max_basis = ($is_otc)? $_SESSION['max_basis_weekly'][$generic_name_string]: $_SESSION['max_basis_monthly'][$generic_name_string];
-                        } else {
-                            $compound_total = $compound_dosage_transaction[$generic_name_string];
-                            $max_basis = ($is_otc)? $max_basis_weekly[$generic_name_string]: $max_basis_monthly[$generic_name_string];
-                        }
+                            
+                            if($compound_total >= $max_basis){
+                                $maxed = "flagged";
+                                $flagged_items[] = $item;
+                            } else {
+                                $maxed = "";
+                            }
                         
-                        if($compound_total >= $max_basis){
-                            $maxed = "flagged";
-                            $flagged_items[] = $item;
+                            // end of conditions
+                            ?>
+                            <div class="row _transaction-record collapse-header<?php echo " $maxed";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="true" aria-controls="collapse_<?php echo $counter?>">
+                                <!--div class="col col-12">
+                                    <?php /*echo "<b>(Dosage on this purchase: $total_dosage)</b>"; ?>
+                                    <?php echo "<br><b>($generic_name_string: ".$_SESSION['compound_dosage_recent'][$generic_name_string].")</b>"; ?>
+                                    <?php echo "<br><b>(Compound Total: ".$compound_total.")</b>"; ?>
+                                    <?php echo "<br><b>(Max: ".$max_basis.")</b>"; */?>
+                                </div-->
+                                <div class="col col-12">
+                                    <b><?php echo "$brand $dose"."$unit @ $quantity pcs"?></b>
+                                </div>
+                                <div class="col col-12">
+                                    [ <?php echo $generic_name_string?> ]<br>
+                                </div>
+                            <?php 
                         } else {
-                            $maxed = "";
-                        }
-                    
-                        // end of conditions
+                            $desc = ucwords($item['desc']);
+                            ?>
+                            <div class="row _transaction-record collapse-header" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="true" aria-controls="collapse_<?php echo $counter?>">
+                                <div class="col col-12">
+                                    <b><?php echo $desc?></b>
+                                </div>
+                            <?php
+                            
+                        }?>
+
+                        
+                                <div id="collapse_<?php echo $counter?>" class="col col-12 collapse" aria-labelledby="heading<?php echo $counter?>">
+                                    <div class="row pl-3">
+                                        <div class="col col-6">
+                                            VAT Exempt Price
+                                        </div>
+                                        <div class="col col-6 _transaction-record-right">
+                                            <?php echo $vat_exempt_price?>
+                                        </div>
+                                        <div class="col col-6">
+                                            Discounted Price
+                                        </div>
+                                        <div class="col col-6 _transaction-record-right">
+                                            (<?php echo $discount_price ?>)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col col-12">
+                                    <div class="row pl-3">
+                                        <div class="col col-6">
+                                            Amount to pay
+                                        </div>
+                                        <div class="col col-6 _transaction-record-right">
+                                            <?php echo $payable_price ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php
+                    }
+                    if($business_type == "food" || $business_type == "transportation" ){
+                        $desc = $item['desc'];
                         ?>
-                        <div class="row _transaction-record <?php echo $maxed;?>">
-                            <div class="col col-12">
-                                <?php echo "<b>(Dosage on this purchase: $total_dosage)</b>"; ?>
-                                <?php echo "<br><b>($generic_name_string: ".$_SESSION['compound_dosage_recent'][$generic_name_string].")</b>"; ?>
-                                <?php echo "<br><b>(Compound Total: ".$compound_total.")</b>"; ?>
-                                <?php echo "<br><b>(Max: ".$max_basis.")</b>"; ?>
+                        <div class="row _transaction-record collapse-header" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="true" aria-controls="collapse_<?php echo $counter?>">
+                                <div class="col col-12">
+                                <?php echo $desc ?>
                             </div>
-                            <div class="col col-12">
-                                <b><?php echo "$brand $dose"."$unit @ $quantity pcs"?></b>
-                            </div>
-                            <div class="col col-12">
-                                [ <?php echo $generic_name_string?> ]<br>
-                            </div>
-                            <div class="col col-12">
+                            <div id="collapse_<?php echo $counter?>" class="col col-12 collapse" aria-labelledby="heading<?php echo $counter?>">
                                 <div class="row">
                                     <div class="col col-6">
-                                        VAT Exempt Price:
+                                        VAT Exempt Price
                                     </div>
                                     <div class="col col-6 _transaction-record-right">
                                         <?php echo $vat_exempt_price?>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col col-6">
-                                        Discounted Price:
+                                        Discounted Price
                                     </div>
                                     <div class="col col-6 _transaction-record-right">
                                         (<?php echo $discount_price ?>)
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col col-6">
-                                        Amount to pay:
-                                    </div>
-                                    <div class="col col-6 _transaction-record-right">
-                                        <b><?php echo $payable_price ?></b>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                        <?php 
-                    }
-                    if($business_type == "food" || $business_type == "transportation" ){
-                        $desc = $item['desc'];
-                        ?>
-                        <div class="row _transaction-record">
-                            <div class="col col-12">
-                                <?php echo $desc ?>
-                            </div>
-                            <div class="row">
-                                <div class="col col-6">
-                                    VAT Exempt Price:
-                                </div>
-                                <div class="col col-6 _transaction-record-right">
-                                    <?php echo $vat_exempt_price?>
-                                </div>
-                                <div class="col col-6">
-                                    Discounted Price:
-                                </div>
-                                <div class="col col-6 _transaction-record-right">
-                                    (<?php echo $discount_price ?>)
-                                </div>
                             </div>
                             <div class="col col-12">
                                 <div class="row">
                                     <div class="col col-6">
-                                        Amount to pay:
+                                        Amount to pay
                                     </div>
                                     <div class="col col-6 _transaction-record-right">
-                                        <b><?php echo $payable_price ?></b>
+                                        <?php echo $payable_price ?>
                                     </div>
                                 </div>
                             </div>
@@ -237,8 +209,7 @@
                         <?php
                     }
                 }
-            } else {echo "<div class='col col-md-8 text-center mx-auto mt-5'> No active transaction</div>";}
-            mysqli_close($mysqli_2);
+            }
             ?>
         </div>
         <div class="transaction-summary">
@@ -260,16 +231,20 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col col-6">
+                    <div class="col col-12">
                         <?php echo $transaction_date ?>
                     </div>
-                    <div class="col col-6 _transaction-record-right">
-                    </div>  
-                </div>  
+                </div>
+                <div class="row">
+                    <div class="col col-12">
+                        Cashier: <?php echo $clerk ?>
+                    </div>
+                </div>
         </div>
         </div>
         <?php
             if(count($flagged_items) > 0) {
+                $flagged = true;
                 $counter = 0;
                 ?>
                 <div id="myModal" class="modal">
@@ -299,12 +274,14 @@
                     </div> 
                 </div>
                 <?php
-            } else {?>
-                <div class="foot">
-                    <button type="button" class="btn btn-block btn-success btn-lg" id="accept">Accept</button>
-                </div>
-                <?php
+            } else {
+                $flagged = false;
+                
             } ?>
+            
+            <div class="foot">
+                    <button type="button" class="btn btn-block btn-success btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
+                </div>
             <div class="foot">
                 <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
             </div>
@@ -322,19 +299,40 @@
             } 
 
             $(document).ready(function(){
-
                 $("#return").click(function(){
                     $('#body').load("../frontend/home.php #home");
+                });/*
+                $("#2").click(function(){
+                    var action = "accepted";
+
+                    alert("accepted");
+                    console.log(action);
+                    console.log(<?php echo json_encode($transaction); ?>);
+                });*/
+                $("#accept").click(function(){
+                    //alert("accepted");
+                    var trans = JSON.stringify(<?php echo json_encode($transaction); ?>);
+                    alert(trans);
+                    $.post("../backend/create_transaction.php", { accepted: true, transaction: trans}, function(d){
+                        alert(d);
+                        $('#trans123').append(d);
+                        /*
+                        if(d == "true") {
+                            $('#trans123').load(d);
+                            
+                        } else {
+                            alert(d);
+                        }*/
+                    });
                 });
+
+
             });
 
 
             
             console.log("After encode:");
             console.log(<?php echo json_encode($_SESSION); ?>);
-            console.log(<?php echo json_encode($compound_dosage_transaction); ?>);
-            console.log("compound_total:");
-            console.log(<?php echo $compound_total; ?>);
             console.log("transaction:");
             console.log(<?php echo json_encode($transaction); ?>);
         </script>

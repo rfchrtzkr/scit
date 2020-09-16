@@ -1,3 +1,5 @@
+
+
 <?php 
     function determine_sex($sex_, $mode) {
         $sex_ = strtolower($sex_);
@@ -261,24 +263,52 @@
         //    array_push($errors, "Invalid date");
         }
     }
-
     function arrange_generic_name($generic_name_in)
     {   
-        $generic_name_collective = str_replace('  ', ' ', $generic_name_in);
-        $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
-        $generic_names = explode(',', $generic_name_collective);
-        $generic_name_string = "";
-        $count_generic_names=count($generic_names);
-        sort($generic_names);
+        try {
+            $generic_name_collective = str_replace('  ', ' ', $generic_name_in);
+            $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
+            $generic_names = explode(',', $generic_name_collective);
+            $generic_name_string = "";
+            $count_generic_names=count($generic_names);
+            sort($generic_names);
 
-        for( $i = 0 ; $i < $count_generic_names ; $i++ ){
-            $generic_name = $generic_names[$i];
-            $generic_name_string .= ucwords($generic_name);
-            if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i) {
-                $generic_name_string .= ", ";
+            for( $i = 0 ; $i < $count_generic_names ; $i++ ){
+                $generic_name = $generic_names[$i];
+                $generic_name_string .= ucwords($generic_name);
+                if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i) {
+                    $generic_name_string .= ", ";
+                }
             }
+            return $generic_name_string;
         }
-        return $generic_name_string;
+        catch(Exception $e) {
+            echo 'Message: ' .$e->getMessage();
+        }
     }
+
+    function validate_drug($generic_name, $brand, $dose, $unit)
+    {   
+        include_once("../backend/conn.php");
+        $mysqli_function = new mysqli($host,$user,$pass,$schema) or die($mysqli_function->error);
+
+        $query_function = "SELECT * FROM `view_drugs` 
+        WHERE `generic_name` = '$generic_name' AND `brand` = '$brand' AND  `dose` = '$dose' AND `unit` =  '$unit';";
+
+        $result = $mysqli_function->query($query_function);
+        $row_count = mysqli_num_rows($result);
+        if($row_count == 1) {
+            echo "true";
+        } elseif ($row_count == 0) {
+            echo "Drug does not exist";
+
+        } else {
+            while($row = mysqli_fetch_assoc($result)){
+                echo "<br>a";
+            }
+            echo "Multiple drug exists";
+        }
+    }
+
 
 ?>

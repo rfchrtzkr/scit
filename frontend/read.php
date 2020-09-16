@@ -1,5 +1,4 @@
 <?php 
-    include('../backend/conn_members.php');
     include('../backend/php_functions.php');
     
     $picture = "../resources/images/unknown_m_f.png";

@@ -1,5 +1,4 @@
-            </div>
-        </div>
+        </div></div>
         <input type="hidden" id="bustype" name="bustype" value="<?php echo $_SESSION['business_type'];?>">
     </body>
 </html>
