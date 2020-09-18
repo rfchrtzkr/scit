@@ -1,19 +1,18 @@
 <?php 
-    include('../backend/php_functions.php');
-    
-    $picture = "../resources/images/unknown_m_f.png";
-    $osca_id = "";
-    $selected_id = "";
-    $first_name = "";
-    $middle_name = "";
-    $last_name = "";
-    $sex2 = "";
-    $bdate = "";
-    $memship_date = "";
-    $contact_number = "";
-
     if(isset($_POST['input_nfc']) && $_POST['input_nfc'] != "" && isset($_POST['business_type']))
     {
+        include('../backend/php_functions.php');
+        
+        $picture = "../resources/images/unknown_m_f.png";
+        $osca_id = "";
+        $selected_id = "";
+        $first_name = "";
+        $middle_name = "";
+        $last_name = "";
+        $sex2 = "";
+        $bdate = "";
+        $memship_date = "";
+        $contact_number = "";
         $member_exists = include('../backend/read.php');
         if($member_exists)
         {
@@ -72,15 +71,14 @@
             <script>
                 $(document).ready(function(){
 
-                    $("#trans_history").click(function(){            
+                    $("#trans_history").click(function(){
                         var osca_id = "<?php echo $osca_id;?>";
                         
                         $.post("../frontend/transaction_history.php", {osca_id: osca_id }, function(d){
                             if(d != "false"){
-                                $('#body').load("../frontend/transaction_history.php", { osca_id: osca_id  });
+                                $('#body').load("../frontend/transaction_history.php", { osca_id: osca_id });
                             } else {
-                                //$('#body').load("../frontend/home.php #home");
-                                alert(d);
+                                $('#body').load("../frontend/home.php #home");
                             }
                         });
                     });

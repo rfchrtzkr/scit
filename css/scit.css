@@ -1,4 +1,8 @@
 
+html { /* TEMPO ONLY. SAKIT LANG KASI SA MATA */
+    background: black;
+    filter: invert(1) hue-rotate(180deg);
+}
 .scit {
     position: relative;
     margin: auto;

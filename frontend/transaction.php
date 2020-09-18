@@ -1,21 +1,16 @@
 <?php
     include('../backend/session.php');
-    include('../backend/php_functions.php');
-    
-    $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
-    $total_discount = 0;
-    $total_amount_to_pay = 0;
-    $transaction_date = "";
-    $clerk = "";
-    $flagged_items = [];
     
     if(isset($_SESSION['osca_id'])) {
+        include('../backend/php_functions.php');
+    
+        $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
+        $total_discount = 0;
+        $total_amount_to_pay = 0;
+        $transaction_date = "";
+        $clerk = "";
+        $flagged_items = [];
         $business_type = $_SESSION['business_type'];
-        // -----------delete--------------
-        ?>
-        <script> console.log("Before encode:");console.log(<?php echo json_encode($_SESSION); ?>); </script>
-        <?php
-        // -----------delete--------------
         ?>
         <div class="title">
             TRANSACTION
@@ -28,6 +23,9 @@
             {
                 $counter = 0;
                 include('../backend/new_transaction.php');
+                if(count($unregistered_drugs) > 0){
+                    // send $unregistered_drugs_json to laptop using serial
+                }
                 
                 // get total of compound dosage in this transaction
                 if($business_type == "pharmacy"){
@@ -74,14 +72,12 @@
                 // Populate transactions list from $transactions array
                 foreach($transaction as $row => $item){
                     $counter++;
-                    $transaction_date = $item['trans_date'];
-                    $clerk = $item['clerk'];
                     $vat_exempt_price = $formatter->format($item['vat_exempt_price']);
                     $discount_price = $formatter->format($item['discount_price']);
                     $payable_price = $formatter->format($item['payable_price']);
                     
-                    $total_discount += (int)$item['discount_price'];
-                    $total_amount_to_pay += (int)$item['payable_price'];
+                    $total_discount += (double)$item['discount_price'];
+                    $total_amount_to_pay += (double)$item['payable_price'];
                     
                     if($business_type == "pharmacy"){
                         if (!isset($item['desc'])) {
@@ -108,8 +104,11 @@
                                 $max_basis = ($is_otc)? $max_basis_weekly[$generic_name_string]: $max_basis_monthly[$generic_name_string];
                             }
                             
-                            if($compound_total >= $max_basis){
+                            if($compound_total > $max_basis){
                                 $maxed = "flagged";
+                                ?>
+                                <script>console.log("<?php echo "flagged: ($compound_total > $max_basis) == true; Item:" . $item['brand']?>")</script>
+                                <?php
                                 $flagged_items[] = $item;
                             } else {
                                 $maxed = "";
@@ -232,12 +231,12 @@
                 </div>
                 <div class="row">
                     <div class="col col-12">
-                        <?php echo $transaction_date ?>
+                        <?php echo $transaction_static['trans_date'] ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col col-12">
-                        Cashier: <?php echo $clerk ?>
+                        Cashier: <?php echo $transaction_static['clerk'] ?>
                     </div>
                 </div>
         </div>
@@ -263,7 +262,7 @@
                                         $unit = $item['unit'];
                                         $quantity = $item['quantity'];
                                         
-                                        echo "<li>Item #$counter: $brand $dose"."$unit @ $quantity pcs</li>";
+                                        echo "<li>Item #$counter: $brand [ $generic_name_string ] $dose"."$unit @ $quantity pcs</li>";
                                         
                                     }
                                 ?>
@@ -285,13 +284,8 @@
             <div class="foot">
                 <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
             </div>
-            
-            
         <script>
-            
             var modal = document.getElementById("myModal");
-            
-
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
@@ -312,9 +306,7 @@
                 $("#accept").click(function(){
                     //alert("accepted");
                     var trans = JSON.stringify(<?php echo json_encode($transaction); ?>);
-                    alert(trans);
                     $.post("../backend/create_transaction.php", { accepted: true, transaction: trans}, function(d){
-                        alert(d);
                         $('#trans123').append(d);
                         /*
                         if(d == "true") {
@@ -331,7 +323,7 @@
 
 
             
-            console.log("After encode:");
+            console.log("Session vars after encode:");
             console.log(<?php echo json_encode($_SESSION); ?>);
             console.log("transaction:");
             console.log(<?php echo json_encode($transaction); ?>);

@@ -4,10 +4,6 @@
 </html>
 
 <script>
-    function reload_home() {
-        //$('#body').load("../frontend/home.php #home");
-    }
-
     $(document).ready(function(){
         $("#read").click(function(){
             var input_nfc = $("#nfc_id").val();
@@ -16,10 +12,10 @@
                 if(d != "false"){
                     $('#body').load("../frontend/read.php", { input_nfc: input_nfc, business_type:business_type });
                 } else {
-                    alert(d);
+                    alert("Invalid user");
                     $('#body').load("../frontend/home.php #home");
                 }
-                setTimeout(function() { reload_home(); }, 5000);
+                //setTimeout(function() { reload_home(); }, 5000);
             });
         });
         $("#transaction").click(function(){
@@ -29,7 +25,7 @@
                 if(d != "false"){
                     $('#body').load("../frontend/transaction.php", { input_nfc: input_nfc, business_type:business_type });
                 } else {
-                    alert(d);
+                    alert("Invalid user");
                     $('#body').load("../frontend/home.php #home");
                 }
             });

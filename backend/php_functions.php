@@ -263,6 +263,7 @@
         //    array_push($errors, "Invalid date");
         }
     }
+
     function arrange_generic_name($generic_name_in)
     {   
         try {
@@ -286,28 +287,130 @@
             echo 'Message: ' .$e->getMessage();
         }
     }
+    
+    function simplify_generic_name($generic_name_in)
+    {   
+        try {
+            $generic_name_collective = str_replace('  ', ' ', $generic_name_in);
+            $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
+            $generic_names = explode(',', $generic_name_collective);
+            $generic_name_string = "";
+            $count_generic_names=count($generic_names);
+            sort($generic_names);
+
+            for( $i = 0 ; $i < $count_generic_names ; $i++ ){
+                $generic_name = $generic_names[$i];
+                $generic_name_string .= strtolower($generic_name);
+                if ($i >= 0 && $count_generic_names > 1 && ($count_generic_names - 1) != $i) {
+                    $generic_name_string .= ",";
+                }
+            }
+            return $generic_name_string;
+        }
+        catch(Exception $e) {
+            echo 'Message: ' .$e->getMessage();
+        }
+    }
 
     function validate_drug($generic_name, $brand, $dose, $unit)
     {   
-        include_once("../backend/conn.php");
+        include('../backend/conn.php');
         $mysqli_function = new mysqli($host,$user,$pass,$schema) or die($mysqli_function->error);
 
-        $query_function = "SELECT * FROM `view_drugs` 
-        WHERE `generic_name` = '$generic_name' AND `brand` = '$brand' AND  `dose` = '$dose' AND `unit` =  '$unit';";
 
-        $result = $mysqli_function->query($query_function);
-        $row_count = mysqli_num_rows($result);
-        if($row_count == 1) {
-            echo "true";
-        } elseif ($row_count == 0) {
-            echo "Drug does not exist";
+        $generic_name = simplify_generic_name($generic_name);
 
-        } else {
-            while($row = mysqli_fetch_assoc($result)){
-                echo "<br>a";
+        $query_function = "SELECT `id` FROM `view_drugs` WHERE `generic_name` = '$generic_name' AND `brand` = '$brand' AND  `dose` = '$dose' AND `unit` =  '$unit';";
+        if($result = $mysqli_function->query($query_function)){
+            $row_count = mysqli_num_rows($result);
+            if($row_count == 1) {
+                $row = mysqli_fetch_assoc($result);
+                $id = $row['id'];
+                return $id;
+            } else{
+                return 0;
             }
-            echo "Multiple drug exists";
         }
+        else {
+            return false;
+        }
+        mysqli_close($mysqli_function);
+    }
+
+    function verify_drugs($drugs)
+    {
+        $unregistered_drugs = [];
+        foreach($drugs as $row => $item_from_pos){
+            if(isset($item_from_pos['generic_name'])){
+                $item = [];
+                $item['generic_name'] = arrange_generic_name($item_from_pos['generic_name']);
+                $item['brand'] = $item_from_pos['brand']; // from pos
+                $item['dose'] = (int)$item_from_pos['dose']; // from pos
+                $item['unit'] = $item_from_pos['unit']; // from pos
+                $generic_name = $item['generic_name'];
+                $brand = $item['brand'];
+                $dose = $item['dose'];
+                $unit = $item['unit'];
+                $drug_id = validate_drug($generic_name, $brand, $dose, $unit);
+                if($drug_id == 0) {
+                    $unregistered_drugs[] = $item;
+                }
+            }
+        }
+        return $unregistered_drugs;
+    }
+
+    function create_drug($generic_name, $brand, $dose, $unit, $is_otc, $max_monthly, $max_weekly)
+    {   
+        include('../backend/conn_osca.php');
+        $mysqli_function = new mysqli($host_2,$user_2,$pass_2,$schema_2) or die($mysqli_function->error);
+        $query_function = "SELECT * FROM `view_drugs` WHERE `generic_name` = '$generic_name' AND `brand` = '$brand' AND  `dose` = '$dose' AND `unit` =  '$unit';";
+        if($result = $mysqli_function->query($query_function)){
+            $row_count = mysqli_num_rows($result);
+            if($row_count == 0) {
+                $query_function = "CALL add_drug(`$generic_name`, `$brand`, `$dose`, `$unit`, `$is_otc`, `$max_monthly`, `$max_weekly`)";
+                if($mysqli_function->query($query_function)){
+                    //successfully inserted 
+                    return true;
+                }
+                else {
+                    // The query has an error
+                    return false;
+                }
+            } else{
+                // The input drug already exists, return false
+                return false;
+            }
+        }
+        else {
+            // The query has an error
+            return false;
+        }
+        mysqli_close($mysqli_function);
+    }
+
+    function get_drug_details($drug_id, $generic_name = false, $brand = false, $dose = false, $unit = false)
+    {   
+        include('../backend/conn.php');
+        $mysqli_function = new mysqli($host,$user,$pass,$schema) or die($mysqli_function->error);
+        if($generic_name && $brand && $dose && $unit){
+            $generic_name = simplify_generic_name($generic_name);
+            $query_function = "SELECT `is_otc`, `max_monthly`, `max_weekly` FROM `view_drugs` WHERE `generic_name` = '$generic_name' AND `brand` = '$brand' AND  `dose` = '$dose' AND `unit` =  '$unit';";
+        } else {
+            $query_function = "SELECT `is_otc`, `max_monthly`, `max_weekly` FROM `view_drugs` WHERE `id` = '$drug_id';";
+        }
+        if($result = $mysqli_function->query($query_function)){
+            $row_count = mysqli_num_rows($result);
+            if($row_count == 1) {
+                return mysqli_fetch_assoc($result);
+            } else{
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+        mysqli_close($mysqli_function);
     }
 
 

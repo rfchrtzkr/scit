@@ -1,17 +1,21 @@
 <?php
     include('head.php');
     
-    $logo =  "../resources/logo/".$_SESSION["logo"]; 
-
-    if (true) {
-        $logo =  "../resources/logo/".$_SESSION["logo"]; 
-    } else {
-        $logo = "../resources/images/unknown_m_f.png";
-    }
-    
 ?>
     <div class="col col-sm-10 contents" id="body">
         <div id="home">
+            <?php
+                include('../backend/reset_member_session.php');
+                
+                $logo = "../resources/logo/".$_SESSION["logo"]; 
+
+                if (true) {
+                    $logo = "../resources/logo/".$_SESSION["logo"]; 
+                } else {
+                    $logo = "../resources/images/unknown_m_f.png";
+                }
+                
+            ?>
             <div class="logo">
                 <img src="<?php echo $logo; ?>" alt="<?php echo $_SESSION['company_name'];?>" class="logo" >
             </div>

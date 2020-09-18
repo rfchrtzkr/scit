@@ -44,8 +44,6 @@
         }
         mysqli_close($mysqli);// Closing Connection
     } else {
-        return false;
+        echo "false";
     }
 ?>
-
-<script> console.log(<?php echo json_encode($_SESSION); ?>); </script>

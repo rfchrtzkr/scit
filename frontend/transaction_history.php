@@ -63,7 +63,6 @@
                 $discount_price = $formatter->format($row['discount_price']);
                 $payable_price = $formatter->format($row['payable_price']);
                 
-                
                 if(validate_date_month($ddd, "-1")){
                     $recent = "non-recent";
                 } else {

@@ -1,6 +1,7 @@
 <?php
     include('../backend/session.php');
     include('../backend/conn_osca.php');
+    include('../backend/php_functions.php');
     
     $selected_id = $_SESSION['osca_id'];
     $business_type = $_SESSION['business_type'];
@@ -11,8 +12,6 @@
         $transaction = json_decode($_POST['transaction'], true);
         echo "direct post:<br>". $_POST['transaction'] . "<br><hr><br>json_decode:<br>";
         var_dump($transaction);
-
-        
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         
         foreach($transaction as $row => $item){
@@ -39,14 +38,24 @@
                 $brand = $item['brand'];
                 $dose = $item['dose'];
                 $unit = $item['unit'];
+                $unit_price = $item['unit_price'];
                 $is_otc = $item['is_otc'];
                 $quantity = $item['quantity'];
                 $max_monthly = $item['max_monthly'];
                 $max_weekly = $item['max_weekly'];
                 $is_otc = $item['is_otc'];
                 
-                validate_drug($generic_name, $brand, $dose, $unit);
+                $drug_id = validate_drug($generic_name, $brand, $dose, $unit);
+                //$string1 = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                if($drug_id != 0) {
+                    //exact drug match exists
+                } else {
+                    
+                    //ultimate goal is to set a value to the drug_id
+                    $drug_id = "";
+                }
 
+                $query = "CALL `add_transaction_pharmacy_drug`('$business_type', '$company_tin', '$transaction_date', '$selected_id', '$clerk', '$drug_id', '$quantity', '$unit_price', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
             } elseif( $business_type == "pharmacy" && array_key_exists("desc",$item)){
                 $desc = $item['desc'];
                 $query = "CALL `add_transaction_pharmacy_nondrug`('$business_type', '$company_tin', '$transaction_date', '$selected_id', '$clerk', '$desc', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
@@ -72,51 +81,7 @@
             else {
                 echo "ERROR: Unable to execute. \r\n $query" . mysqli_error($mysqli_2);
             }
-            
         }
         
-        /*
-        $query1 = "SELECT `osca_id` FROM `member` WHERE `osca_id` = '$osca_id';";
-        $result1 = $mysqli->query($query1);
-        $rows1 = mysqli_num_rows($result1);
-        $query2 = "SELECT `nfc_serial` FROM `member` WHERE `nfc_serial` = '$nfc_serial';";
-        $result2 = $mysqli->query($query2);
-        $rows2 = mysqli_num_rows($result2);
-
-        if ($rows1 == 0 && $rows2 == 0) { // OSCA ID is unique
-            $mysqli->query("START TRANSACTION;");
-            $query = "CALL `add_member`('$firstname', '$middlename', '$lastname', '$birthdate', 
-                                    '$sex2', '$contact_number', '$email', '$membership_date',
-                                    '$address_line1', '$address_line2', '$address_city', '$address_province', 
-                                    '$nfc_serial', '$osca_id', '$password', 
-                                    '$g_firstname', '$g_middlename', '$g_lastname',
-                                    '$g_contact_number', '$g_sex2', '$g_relationship', '$g_email')";
-            if($mysqli->query($query)){
-                
-                echo "$query";
-                $mysqli->query("commit;");
-            }
-            else {
-                echo "ERROR: Unable to execute. \r\n $query" . mysqli_error($mysqli);
-            }
-        }
-        else {
-            if($rows1 > 0){echo "OSCA ID exists \r\n";} else {}
-            if($rows2 > 0){echo "NFC Serial exists";} else {}
-        }
     }
-    else {
-        echo "Errors have been found. Could not execute addition of account. ";
-        // Displaying records from external php file "validate_user_inputs.php"
-        echo "\r\n";
-        for( $i = 0 ; $i < $array_length ; $i++ )
-        {
-            echo "\r\n";
-            echo $errors[$i];
-        }
-
-        $errors= array();
-    }
-    mysqli_close($mysqli);*/
-}
 ?>
