@@ -343,12 +343,12 @@
         foreach($drugs as $row => $item_from_pos){
             if(isset($item_from_pos['generic_name'])){
                 $item = [];
-                $item['generic_name'] = arrange_generic_name($item_from_pos['generic_name']);
+                $item['generic_name'] = simplify_generic_name($item_from_pos['generic_name']);
                 $item['brand'] = $item_from_pos['brand']; // from pos
-                $item['dose'] = (int)$item_from_pos['dose']; // from pos
+                $item['dose'] = $item_from_pos['dose']; // from pos
                 $item['unit'] = $item_from_pos['unit']; // from pos
-                $generic_name = $item['generic_name'];
-                $brand = $item['brand'];
+                $generic_name = strtolower($item['generic_name']);
+                $brand = strtolower($item['brand']);
                 $dose = $item['dose'];
                 $unit = $item['unit'];
                 $drug_id = validate_drug($generic_name, $brand, $dose, $unit);
@@ -368,15 +368,12 @@
         if($result = $mysqli_function->query($query_function)){
             $row_count = mysqli_num_rows($result);
             if($row_count == 0) {
-                $query_function = "CALL add_drug(`$generic_name`, `$brand`, `$dose`, `$unit`, `$is_otc`, `$max_monthly`, `$max_weekly`)";
-                if($mysqli_function->query($query_function)){
-                    //successfully inserted 
-                    return true;
-                }
-                else {
-                    // The query has an error
-                    return false;
-                }
+                
+                $generic_name = simplify_generic_name($generic_name);
+                $brand = strtolower($brand);
+                $query_function = "CALL add_drug('$generic_name', '$brand', '$dose', '$unit', '$is_otc', '$max_monthly', '$max_weekly')";
+                $result = $mysqli_function->query($query_function);
+
             } else{
                 // The input drug already exists, return false
                 return false;

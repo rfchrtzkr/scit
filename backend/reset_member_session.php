@@ -5,3 +5,6 @@
     unset($_SESSION['max_basis_monthly']);
     unset($_SESSION['osca_id']);
     unset($_SESSION['sr_full_name']);
+    unset($_SESSION['unregistered_drugs']);
+
+    

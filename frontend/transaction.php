@@ -2,7 +2,7 @@
     include('../backend/session.php');
     
     if(isset($_SESSION['osca_id'])) {
-        include('../backend/php_functions.php');
+        include_once('../backend/php_functions.php');
     
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         $total_discount = 0;
@@ -23,12 +23,13 @@
             {
                 $counter = 0;
                 include('../backend/new_transaction.php');
-                if(count($unregistered_drugs) > 0){
-                    // send $unregistered_drugs_json to laptop using serial
-                }
                 
                 // get total of compound dosage in this transaction
                 if($business_type == "pharmacy"){
+                    if(count($unregistered_drugs) > 0){
+                        $_SESSION['unregistered_drugs'] = true;
+                        // send $unregistered_drugs_json to POS using serial
+                    }
                     $compound_dosage_transaction = [];
                     $max_basis_weekly = [];
                     $max_basis_monthly = [];
@@ -75,6 +76,8 @@
                     $vat_exempt_price = $formatter->format($item['vat_exempt_price']);
                     $discount_price = $formatter->format($item['discount_price']);
                     $payable_price = $formatter->format($item['payable_price']);
+                    $trans_date = $item['trans_date'];
+                    $clerk = $item['clerk'];
                     
                     $total_discount += (double)$item['discount_price'];
                     $total_amount_to_pay += (double)$item['payable_price'];
@@ -231,12 +234,12 @@
                 </div>
                 <div class="row">
                     <div class="col col-12">
-                        <?php echo $transaction_static['trans_date'] ?>
+                        <?php echo $trans_date ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col col-12">
-                        Cashier: <?php echo $transaction_static['clerk'] ?>
+                        Cashier: <?php echo $clerk ?>
                     </div>
                 </div>
         </div>
@@ -258,11 +261,12 @@
                                         $counter++;
 
                                         $brand = ucwords($item['brand']);
+                                        $generic_name = ucwords($item['generic_name']);
                                         $dose = $item['dose'];
                                         $unit = $item['unit'];
                                         $quantity = $item['quantity'];
                                         
-                                        echo "<li>Item #$counter: $brand [ $generic_name_string ] $dose"."$unit @ $quantity pcs</li>";
+                                        echo "<li>Item #$counter: $brand [ $generic_name ] $dose"."$unit @ $quantity pcs</li>";
                                         
                                     }
                                 ?>
@@ -284,6 +288,26 @@
             <div class="foot">
                 <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
             </div>
+            
+            <?php 
+            /*
+                // format for incoming new drug.
+                { 
+                "generic_name": "cetirizine",
+                "brand": "Brand 2",
+                "dose": "10",
+                "unit": "mg",
+                "is_otc": "1",
+                "max_monthly": "70",
+                "max_weekly": "300"
+                }
+            */
+            // this will control the creation of unknown drugs. Above is format for json from pharmacy pos
+            $trigger = true; 
+            if(isset($_SESSION['unregistered_drugs']) && $_SESSION['unregistered_drugs'] && $trigger) {
+                include("../backend/create_drugs.php");
+            }
+            ?>
         <script>
             var modal = document.getElementById("myModal");
             window.onclick = function(event) {
