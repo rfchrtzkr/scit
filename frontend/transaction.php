@@ -26,10 +26,20 @@
                 
                 // get total of compound dosage in this transaction
                 if($business_type == "pharmacy"){
+
                     if(count($unregistered_drugs) > 0){
                         $_SESSION['unregistered_drugs'] = true;
+                        // PROGRESS REMAINING:
                         // send $unregistered_drugs_json to POS using serial
+                        // the $unregistered_drugs_json will be converted to json and 
+                        // use the containing details to be the generic name, brand, dose&unit
+                        // the only editable text in POS will be the is_otc, max_wkly, & max_monthly
+                        // if the SCIT receives the $_POST['unregisted_drugs'],
+                        // load the transaction.php  to the #body
+                    } else {
+                        unset($_SESSION['unregistered_drugs']);
                     }
+
                     $compound_dosage_transaction = [];
                     $max_basis_weekly = [];
                     $max_basis_monthly = [];
@@ -242,9 +252,20 @@
                         Cashier: <?php echo $clerk ?>
                     </div>
                 </div>
+            </div>
         </div>
-        </div>
-        <?php
+        <?php 
+            // this will control the creation of unknown drugs.
+            if(isset($_SESSION['unregistered_drugs']) && $_SESSION['unregistered_drugs']) {
+                include("../backend/create_drugs.php");
+                ?>
+                <script>
+                    alert("The invalid drugs will be sent to the POS, the ACCEPT button will be inactive.\r\n Then the SCIT will display trans details while waiting for POS\r\n to send the [transaction details] + [new drug details]. \r\n Only then the ACCEPT TRANSACTION button will be active.");
+                </script>
+                
+                <?php
+            }
+
             if(count($flagged_items) > 0) {
                 $flagged = true;
                 $counter = 0;
@@ -282,32 +303,12 @@
                 
             } ?>
             
-            <div class="foot">
-                    <button type="button" class="btn btn-block btn-success btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
-                </div>
-            <div class="foot">
-                <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
-            </div>
-            
-            <?php 
-            /*
-                // format for incoming new drug.
-                { 
-                "generic_name": "cetirizine",
-                "brand": "Brand 2",
-                "dose": "10",
-                "unit": "mg",
-                "is_otc": "1",
-                "max_monthly": "70",
-                "max_weekly": "300"
-                }
-            */
-            // this will control the creation of unknown drugs. Above is format for json from pharmacy pos
-            $trigger = true; 
-            if(isset($_SESSION['unregistered_drugs']) && $_SESSION['unregistered_drugs'] && $trigger) {
-                include("../backend/create_drugs.php");
-            }
-            ?>
+        <div class="foot">
+            <button type="button" class="btn btn-block btn-success btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
+        </div>
+        <div class="foot">
+            <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
+        </div>
         <script>
             var modal = document.getElementById("myModal");
             window.onclick = function(event) {
@@ -316,37 +317,49 @@
                 }
             } 
 
+            function CreateTransaction(message) {
+                $('<div></div>').appendTo('body')
+                    .html('<div><h6>' + message + '?</h6></div>')
+                    .dialog({
+                        modal: true,
+                        title: 'Delete message',
+                        zIndex: 10000,
+                        autoOpen: true,
+                        width: 'auto',
+                        resizable: false,
+                        buttons: {
+                            Yes: function() {
+                                // $(obj).removeAttr('onclick');                                
+                                // $(obj).parents('.Parent').remove();
+                                var trans = JSON.stringify(<?php echo json_encode($transaction); ?>);
+                                $.post("../backend/create_transaction.php", { accepted: true, transaction: trans}, function(d){
+                                    $('#trans123').append(d);
+                                });
+
+                                $('body').append('<h1>Confirm Dialog Result: <i>Yes</i></h1>');
+                                $(this).dialog("close");
+                            },
+                            No: function() {
+                                $('#body').load("../frontend/home.php #home");
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function(event, ui) {
+                            $(this).remove();
+                        }
+                    });
+            };
+
             $(document).ready(function(){
                 $("#return").click(function(){
                     $('#body').load("../frontend/home.php #home");
-                });/*
-                $("#2").click(function(){
-                    var action = "accepted";
-
-                    alert("accepted");
-                    console.log(action);
-                    console.log(<?php echo json_encode($transaction); ?>);
-                });*/
+                });
+                
                 $("#accept").click(function(){
                     //alert("accepted");
-                    var trans = JSON.stringify(<?php echo json_encode($transaction); ?>);
-                    $.post("../backend/create_transaction.php", { accepted: true, transaction: trans}, function(d){
-                        $('#trans123').append(d);
-                        /*
-                        if(d == "true") {
-                            $('#trans123').load(d);
-                            
-                        } else {
-                            alert(d);
-                        }*/
-                    });
+                    CreateTransaction('Are you sure');
                 });
-
-
             });
-
-
-            
             console.log("Session vars after encode:");
             console.log(<?php echo json_encode($_SESSION); ?>);
             console.log("transaction:");

@@ -1,14 +1,15 @@
 <div>
-include("php_functions.php");
-</div>
-<div>   
-echo simplify_generic_name("aa,  hh, cc    cccc, bb, dd, gggg, bBb, hhhh");
-</div>
+
+
+
+</div> <!-- codes -->
+
 <br><br>
+
 <div>
 <?php
 include("php_functions.php");
-
+/*
 echo "<br>output: ". simplify_generic_name("Paracetamol,   Ibuprofen");
 echo "<br>output: ". simplify_generic_name("Ibuprofen, Paracetamol");
 $drug = get_drug_details("3");
@@ -61,26 +62,57 @@ $unregistered_drugs = verify_drugs($transaction_from_pos);
 var_dump($transaction_from_pos);
 var_dump($unregistered_drugs);
 
+*/
 
-$unregistered_drugs = [];
-foreach($transaction_from_pos as $row => $item_from_pos){
-    if(isset($item_from_pos['generic_name'])){
-        $item = [];
-        $item['generic_name'] = simplify_generic_name($item_from_pos['generic_name']);
+$item['generic_name'] = arrange_generic_name("Sodium Ascorbate, aa");
+$item['brand'] = "Immunpro"; // from pos
+$item['dose'] = (int)500; // from pos
+$item['unit'] = "mg"; // from pos
 
-        echo $item_from_pos['generic_name'] . "<br><hr>";
-        echo simplify_generic_name($item_from_pos['generic_name']);
+$generic_name = $item['generic_name'];
+$brand = $item['brand'];
+$dose = $item['dose'];
+$unit = $item['unit'];
+$is_otc = 1;
+$max_monthly = 30000;
+$max_weekly = 7000;
 
-        $item['brand'] = strtolower($item_from_pos['brand']); // from pos
-        $item['dose'] = (int)$item_from_pos['dose']; // from pos
-        $item['unit'] = $item_from_pos['unit']; // from pos
-        $generic_name = $item['generic_name'];
-        $brand = $item['brand'];
-        $dose = $item['dose'];
-        $unit = $item['unit'];
-        $drug_id = validate_drug($generic_name, $brand, $dose, $unit);
-        if($drug_id == 0) {
-            $unregistered_drugs[] = $item;
-        }
+$generic_name = simplify_generic_name($generic_name);
+$brand = strtolower($item['brand']);
+$query_function2 = "SELECT * FROM `view_drugs` WHERE `generic_name` = '$generic_name' AND `brand` = '$brand' AND  `dose` = '$dose' AND `unit` =  '$unit';";
+var_dump($query_function2);
+
+$invalid_inputs = array();
+
+$return = create_drug($generic_name, $brand, $dose, $unit, $is_otc, $max_monthly, $max_weekly);
+if($return != "created"){
+    // send msg to POS, msg
+    $invalid_inputs["msg"] = "invalid_inputs";
+    if(array_key_exists("inputs", $invalid_inputs)){
+        $invalid_inputs["inputs"] .= $return;
+    } else {
+        $invalid_inputs["inputs"] = $return;
     }
+} else {
+    $invalid_inputs["msg"] = "inserted";
 }
+
+$invalid_inputs = json_encode($invalid_inputs);
+?>
+<script>
+    console.log(<?php echo (isset($invalid_inputs)) ? $invalid_inputs: "0";?>);
+</script>
+<?php
+
+
+$input_array = array("generic_name" => $generic_name,
+"brand" => $brand,
+"dose" => $dose,
+"unit" => $unit,
+"is_otc" => $is_otc,
+"max_monthly" => $max_monthly,
+"max_weekly" => $max_weekly);
+
+
+var_dump($input_array);
+

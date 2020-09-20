@@ -1,52 +1,11 @@
 <?php
     include_once("../backend/session.php");
     include_once("../backend/php_functions.php");
-    // -- Below: simulation only
-{/*
-    $item = [];
-    $transaction_from_pos = [];
-    $transaction_static = array(
-        'trans_date' => "2020-09-16 09:56:37",
-        'clerk' => "JB Meneses"
-        );
-    {
-        $item = [];
-        $item['trans_date'] = "2020-09-16 09:56:37"; // from pos
-        $item['clerk'] = "JB Meneses"; // from pos
-        $item['vat_exempt_price'] = "100"; // from pos
-        $item['discount_price'] = "20"; // from pos
-        $item['payable_price'] = "80"; // from pos
-        if($_SESSION['business_type'] == "food" || $_SESSION['business_type'] == "transportation") {
-            $item['desc'] = "Purchase drescription";
-        } elseif($_SESSION['business_type'] == "pharmacy") {
-            // if exists, proceed transaction
-            if(!array_key_exists("desc", $item)){ // WARNING: temporarily set to `TRUE`. $is_drug -
-                $item['generic_name'] = arrange_generic_name("calcium carbonate,famotidine,magnesium hydroxide");
-                $item['brand'] = "kremil-s advance"; // from pos
-                $item['dose'] = (int)500; // from pos
-                $item['unit'] = "mg"; // from pos
-                $item['unit_price'] = (double)5.00; // from pos
-                $item['quantity'] = "10"; // from db
-                $generic_name = $item['generic_name'];
-                $brand = $item['brand'];
-                $dose = $item['dose'];
-                $unit = $item['unit'];
-                $drug = get_drug_details("", "$generic_name", "$brand", "$dose", "$unit");
-                $item['is_otc'] = $drug['is_otc']; // from db
-                $item['max_monthly'] = $drug['max_monthly']; // from db
-                $item['max_weekly'] = $drug['max_weekly']; // from db
-            } else {
-                $item['desc'] = ""; // from pos
-            }
-        }
-        $transaction_from_pos[] = $item;
-        // * /
-    }
-*/
-}
+
     // -- Below: simulation only
     {
-        // Pharmacy
+        // Toggle comment $json_string for simulation of data for: PHARMACY
+        /*
         $json_string = '[
             {
             "clerk": "AL Manalon",
@@ -59,7 +18,7 @@
             "vat_exempt_price": "39.06",
             "discount_price": "7.81",
             "payable_price": "31.25",
-            "trans_date": "2020-09-17 18:40:11"
+            "trans_date": "2020-09-17 21:11:11"
             },
             {
             "clerk": "AL Manalon",
@@ -72,11 +31,11 @@
             "vat_exempt_price": "50",
             "discount_price": "10",
             "payable_price": "40",
-            "trans_date": "2020-09-17 18:40:11"
+            "trans_date": "2020-09-17 21:11:11"
             },
             {
             "clerk": "AL Manalon",
-            "generic_name": "paracetamol",
+            "generic_name": "paracetamolx",
             "brand": "BIOGESIC",
             "dose": "500",
             "unit": "mg",
@@ -85,11 +44,11 @@
             "vat_exempt_price": "65",
             "discount_price": "13",
             "payable_price": "52",
-            "trans_date": "2020-09-17 18:40:11"
+            "trans_date": "2020-09-17 21:11:11"
             },
             {
             "clerk": "AL Manalon",
-            "generic_name": "Sodium Ascorbate, Zincx",
+            "generic_name": "Sodium Ascorbate, aba",
             "brand": "Immunpro",
             "dose": "500",
             "unit": "mg",
@@ -98,14 +57,27 @@
             "vat_exempt_price": "65",
             "discount_price": "13",
             "payable_price": "52",
-            "trans_date": "2020-09-17 18:40:11"
+            "trans_date": "2020-09-17 21:11:11"
+            }
+        ]';*/
+
+        // Toggle comment $json_string for simulation of data for: FOOD
+        $json_string = '[
+            {
+            "clerk": "XY Zinger",
+            "desc": "Meals for 3",
+            "vat_exempt_price": "892.86",
+            "discount_price": "178.57",
+            "payable_price": "714.29",
+            "trans_date": "2020-09-15 11:11:11"
             }
         ]';
-    }// hard coded yung last item para maging mali. "Sodium Ascorbate, Zincx", meaning unique yung drug
+    }
 
     // -- Below: ACTUAL WAY OF GETTING THE stringified transaction JSON FROM POS 
     // $json_string = $_POST['transaction_from_pos'];
 
+    // -- ACTUAL PROCESS 
     $transaction_from_pos = json_decode($json_string, true );
     $unregistered_drugs = verify_drugs($transaction_from_pos);
     $unregistered_drugs_json = [];

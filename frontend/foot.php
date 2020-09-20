@@ -8,10 +8,8 @@
         $("#read").click(function(){
             var input_nfc = $("#nfc_id").val();
             var business_type = $("#bustype").val();
-            $.post("../frontend/read.php", {input_nfc: input_nfc, business_type:business_type }, function(d){
-                if(d != "false"){
-                    $('#body').load("../frontend/read.php", { input_nfc: input_nfc, business_type:business_type });
-                } else {
+            $('#body').load("../frontend/read.php", { input_nfc: input_nfc, business_type:business_type }, function(d){
+                if(d == "false"){
                     alert("Invalid user");
                     $('#body').load("../frontend/home.php #home");
                 }
@@ -21,10 +19,8 @@
         $("#transaction").click(function(){
             var input_nfc = $("#nfc_id").val();
             var business_type = $("#bustype").val();
-            $.post("../frontend/transaction.php", {input_nfc: input_nfc, business_type:business_type }, function(d){
-                if(d != "false"){
-                    $('#body').load("../frontend/transaction.php", { input_nfc: input_nfc, business_type:business_type });
-                } else {
+            $('#body').load("../frontend/transaction.php", function(d){
+                if(d == "false"){
                     alert("Invalid user");
                     $('#body').load("../frontend/home.php #home");
                 }

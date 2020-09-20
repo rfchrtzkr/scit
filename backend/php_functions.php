@@ -364,24 +364,38 @@
     {   
         include('../backend/conn_osca.php');
         $mysqli_function = new mysqli($host_2,$user_2,$pass_2,$schema_2) or die($mysqli_function->error);
-        $query_function = "SELECT * FROM `view_drugs` WHERE `generic_name` = '$generic_name' AND `brand` = '$brand' AND  `dose` = '$dose' AND `unit` =  '$unit';";
-        if($result = $mysqli_function->query($query_function)){
+
+        $input_array = array("generic_name" => $generic_name,
+        "brand" => $brand,
+        "dose" => $dose,
+        "unit" => $unit,
+        "is_otc" => $is_otc,
+        "max_monthly" => $max_monthly,
+        "max_weekly" => $max_weekly);
+        
+        $generic_name = simplify_generic_name($generic_name);
+        $brand = strtolower($brand);
+        $query_function = "CALL add_drug('$generic_name', '$brand', '$dose', '$unit', '$is_otc', '$max_monthly', '$max_weekly')";
+        $query_function2 = "SELECT * FROM `view_drugs` WHERE `generic_name` = '$generic_name' AND `brand` = '$brand' AND  `dose` = '$dose' AND `unit` =  '$unit';";
+        if($result = $mysqli_function->query($query_function2)){
             $row_count = mysqli_num_rows($result);
             if($row_count == 0) {
-                
-                $generic_name = simplify_generic_name($generic_name);
-                $brand = strtolower($brand);
-                $query_function = "CALL add_drug('$generic_name', '$brand', '$dose', '$unit', '$is_otc', '$max_monthly', '$max_weekly')";
                 $result = $mysqli_function->query($query_function);
-
+                return "created";
             } else{
-                // The input drug already exists, return false
-                return false;
+                // The input drug already exists
+                $input_array["qry1"] = $query_function;
+                $input_array["qry2"] = $query_function2;
+                $input_array["error"] = "existing";
+                return $input_array;
             }
         }
         else {
             // The query has an error
-            return false;
+                $input_array["error"] = "invalid inputs";
+                $input_array["qry1"] = $query_function;
+                $input_array["qry2"] = $query_function2;
+            return $input_array;
         }
         mysqli_close($mysqli_function);
     }

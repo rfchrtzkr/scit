@@ -17,6 +17,10 @@
         if($member_exists)
         {
             ?>
+             <!-- TEMPORARY!!! -->
+                <?php $myJSON = json_encode($_SESSION); ?>
+                <script> console.log(<?php echo $myJSON; ?>); </script>
+             <!-- TEMPORARY!!! -->
             <div class="member-picture">
                 <img src="<?php echo $picture; ?>" class="avatar">
             </div>
