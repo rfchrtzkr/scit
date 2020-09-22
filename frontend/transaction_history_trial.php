@@ -40,23 +40,22 @@
             <div class="title">
                 TRANSACTIONS HISTORY
             </div>
-            <div>
-                <!--input type="checkbox" name="filter" id="filter"> <label for="filter">Non-drugs</label-->
-                <button id="show_only_drugs">
-                    <span class="ui-button-text">Show Drugs Only</span>
-                </button>
-            </div>
             <div class="transaction-history scrollbar-black">
         <?php
         
         if($row_count != 0)
         {
             $counter = 0;
+            $transaction_date = "";
+
             $result = $mysqli->query($transaction_query);
+            $trans_history = array();
             while($row = mysqli_fetch_array($result))
             {
-                $counter++;
-                $transaction_date = $row['trans_date'];
+                array_push($trans_history, $row);
+            }
+            
+            foreach ($trans_history as $key => $row) {
                 $clerk = ($row['clerk'] == "")? "N/A" : substr($row['clerk'], 0,4) . "***";
                 $ddd = $row['ddd'];
                 
@@ -75,6 +74,9 @@
                 } else {
 
                     $recent = "recent";
+                }
+                if($transaction_date != $row['trans_date'] && $counter != 0){
+                    echo "</div>";
                 }
                 
                 if($business_type == "pharmacy"){
@@ -96,56 +98,97 @@
                         } else {
                             $maxed = "";
                         }
-                        ?>
-                        <div class="row _transaction-record collapse-header drug <?php echo "$recent $maxed";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
-                            <div class="col col-12 d-md-block">
-                                <b><?php echo "$company - $branch"?></b>
-                            </div>
-                            <div class="col col-12">
-                                <?php echo "$transaction_date <i>(By:  $clerk)</i>"?>
-                            </div>
-                            <div class="col col-12">
-                                <?php echo "[ $generic_name_string ] <br>"?>
-                            </div>
-                            <div class="col col-12">
-                                <b><?php echo "$brand "."$dose"."$unit @ $quantity"."pcs"?></b>
-                            </div>
-                        <?php
-                    } else {
-                        ?>
-                        <div class="row _transaction-record collapse-header non-drug <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
-                            <div class="col col-12 d-md-block">
-                                <b><?php echo "$company - $branch" ?></b>
-                            </div>
-                            <div class="col col-12">
-                                <?php echo "$transaction_date <i>(By:  $clerk)</i>"?>
-                            </div>
-                            <div class="col col-12">
-                                <?php echo $desc_nondrug?>
-                            </div>
-                        <?php
                         
-                    }
+                        if($transaction_date != $row['trans_date']){
+                            $transaction_date = $row['trans_date'];
+                            $counter++;
+                            ?>
+                            <div class="row _transaction-record collapse-header <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                                <div class="col col-12 d-md-block">
+                                    <b><?php echo "$company - $branch"?></b>
+                                </div>
+                                <div class="col col-12">
+                                    <?php echo "$transaction_date <i>(By:  $clerk)</i>"?>
+                                </div>
+                            <?php
+                        }
+                        ?>  <div class="<?php echo $maxed?>">
+                                <div class="col col-12">
+                                    <?php echo "$brand "."$dose"."$unit @ $quantity"."pcs"?>
+                                </div>
+                                <div class="col col-12">
+                                    <?php echo "[ $generic_name_string ] <br>"?>
+                                </div>
+                        <?php                        
+                    } else {
+                        if($transaction_date != $row['trans_date']){
+                            $counter++;
+                            ?>
+                            <div class="row _transaction-record collapse-header <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                                <div class="col col-12 d-md-block">
+                                    <b><?php echo "$company - $branch" ?></b>
+                                </div>
+                                <div class="col col-12">
+                                    <?php echo "$transaction_date <i>(By:  $clerk)</i>"?>
+                                </div>
+                            <?php
+                        }
+                        ?>  <div class="<?php echo $maxed?>">
+                                <div class="col col-12">
+                                    <?php echo $desc_nondrug?>
+                                </div>
+                        <?php
+                    } ?>
+                    
+                                
+                            <div id="collapse_<?php echo $counter?>" class="col collapse" aria-labelledby="heading<?php echo $counter?>">
+                                <div class="row pl-3">
+                                    <div class="col col-6">
+                                        VAT Exempt Price
+                                    </div>
+                                    <div class="col col-6 _transaction-record-right">
+                                        <?php echo $vat_exempt_price?>
+                                    </div>
+                                    <div class="col col-6">
+                                        Discounted Price
+                                    </div>
+                                    <div class="col col-6 _transaction-record-right">
+                                        (<?php echo $discount_price ?>)
+                                    </div>
+                                    <div class="col col-6">
+                                        Net Total
+                                    </div>
+                                    <div class="col col-6 _transaction-record-right">
+                                        <?php echo $payable_price ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    
+                    <?php
                 }
                 if($business_type == "food" || $business_type == "transportation" ){
                     $desc = $row['desc'];
+                    if($transaction_date != $row['trans_date']){
+                        $counter++;
+                        ?>
+                        <div class="row _transaction-record collapse-header <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                        <?php
+                    }
                     ?>
-                    <div class="row _transaction-record collapse-header <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
-                        <div class="col col-12 d-md-block">
-                            <b><?php echo "$company - $branch" ?></b>
-                        </div>
-                        <div class="col col-12">
-                            <?php echo $desc ?>
-                        </div>
-                        <div class="col col-6">
-                            Date:
-                        </div>
-                        <div class="col col-6 _transaction-record-right">
-                            <?php echo $transaction_date ?>
-                        </div>
-                    <?php
-                }
-                ?>
+                    <div class="col col-12 d-md-block">
+                        <b><?php echo "$company - $branch" ?></b>
+                    </div>
+                    <div class="col col-12">
+                        <?php echo $desc ?>
+                    </div>
+                    <div class="col col-6">
+                        Date:
+                    </div>
+                    <div class="col col-6 _transaction-record-right">
+                        <?php echo $transaction_date ?>
+                    </div>
                     <div id="collapse_<?php echo $counter?>" class="col collapse" aria-labelledby="heading<?php echo $counter?>">
                         <div class="row pl-3">
                             <div class="col col-6">
@@ -160,10 +203,6 @@
                             <div class="col col-6 _transaction-record-right">
                                 (<?php echo $discount_price ?>)
                             </div>
-                        </div>
-                    </div>
-                    <div class="col col-12">
-                        <div class="row pl-3">
                             <div class="col col-6">
                                 Net Total
                             </div>
@@ -172,8 +211,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php
+                    <?php
+                }
             }
         } else {
             echo "<div class='col col-md-8 text-center mx-auto mt-5'>No $business_type discount(s) <br> recorded yet for this user</div>";
@@ -187,18 +226,6 @@
             
         <script>
             $(document).ready(function(){
-                var toggle_on = true;
-
-                $("#show_only_drugs").click(function(){
-                    $(".non-drug").toggle(50, "linear");
-                    if(toggle_on){
-                        $("span", this).text("Show All");
-                        toggle_on = false;
-                    } else {
-                        $("span", this).text("Show Drugs Only");
-                        toggle_on = true;
-                    }
-                });
 
                 $("#return").click(function(){
                     $('#body').load("../frontend/home.php #home");

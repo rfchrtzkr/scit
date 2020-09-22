@@ -23,12 +23,18 @@
             {
                 $counter = 0;
                 include('../backend/new_transaction.php');
+                $_SESSION['transaction'] = $transaction;
+                
+                ?>
+                    <script> console.log(<?php echo json_encode($_SESSION); ?>); </script>
+                <?php
                 
                 // get total of compound dosage in this transaction
                 if($business_type == "pharmacy"){
 
                     if(count($unregistered_drugs) > 0){
                         $_SESSION['unregistered_drugs'] = true;
+                        
                         // PROGRESS REMAINING:
                         // send $unregistered_drugs_json to POS using serial
                         // the $unregistered_drugs_json will be converted to json and 
@@ -36,6 +42,20 @@
                         // the only editable text in POS will be the is_otc, max_wkly, & max_monthly
                         // if the SCIT receives the $_POST['unregisted_drugs'],
                         // load the transaction.php  to the #body
+
+
+
+
+                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                        
                     } else {
                         unset($_SESSION['unregistered_drugs']);
                     }
@@ -43,7 +63,7 @@
                     $compound_dosage_transaction = [];
                     $max_basis_weekly = [];
                     $max_basis_monthly = [];
-                    foreach($transaction as $row => $item){
+                    foreach($transaction['items'] as $row => $item){
                         if (!isset($item['desc'])) {
                             $brand = ucwords($item['brand']);
                             $dose = $item['dose'];
@@ -81,13 +101,11 @@
                 }
 
                 // Populate transactions list from $transactions array
-                foreach($transaction as $row => $item){
+                foreach($transaction['items'] as $row => $item){
                     $counter++;
                     $vat_exempt_price = $formatter->format($item['vat_exempt_price']);
                     $discount_price = $formatter->format($item['discount_price']);
                     $payable_price = $formatter->format($item['payable_price']);
-                    $trans_date = $item['trans_date'];
-                    $clerk = $item['clerk'];
                     
                     $total_discount += (double)$item['discount_price'];
                     $total_amount_to_pay += (double)$item['payable_price'];
@@ -333,10 +351,13 @@
                                 // $(obj).parents('.Parent').remove();
                                 var trans = JSON.stringify(<?php echo json_encode($transaction); ?>);
                                 $.post("../backend/create_transaction.php", { accepted: true, transaction: trans}, function(d){
-                                    $('#trans123').append(d);
+                                    if(d="true") {
+                                        alert("Transaction success!");
+                                        $('#body').load("../frontend/home.php #home");
+                                    } else {
+                                        alert("Transaction error!!");
+                                    }
                                 });
-
-                                $('body').append('<h1>Confirm Dialog Result: <i>Yes</i></h1>');
                                 $(this).dialog("close");
                             },
                             No: function() {
@@ -369,4 +390,44 @@
     } else {
         echo "false";
     }
+
+
+/*
+    btn.Accept click event ()
+    {
+        /*
+        if (data VALIDATED) {
+            convert DataTable to JSON;
+            stringify JSON;
+            if(Stringified JSON to Serial comm SENT SUCCESS)
+            {
+                // WAITING for return signal of Serial comm
+                // Convert Stringified JSON to JSON Object
+                // Store JSON Obect contents to C# List / variable  
+                // string received_data = JSON Object["received_data"]
+
+                if (received_data = "sucess") {
+                    new transaction
+
+                } elseif (received_data = "invalid_senior") {
+                    pop up msg: Senior Data is Invalid
+                    // invalid if wala nabasang Senior sa SCIT
+
+                } elseif (received_data = "invalid_drug") {
+                    open form: new drugs
+                        
+                }
+            } else {
+                // msg saying "Please establish a stable connection with the Senior Citizen Information Terminal"
+            }
+        } else {
+            re-validate data inputs in DataTable.
+            PS
+            pwedeng wag na lagyan tong else
+        }
+    }
+        */
+
+
+
 ?>

@@ -10,11 +10,15 @@
     if(isset($_POST['accepted']) && $_POST['accepted'])
     {
         $transaction = json_decode($_POST['transaction'], true);
-        echo "direct post:<br>". $_POST['transaction'] . "<br><hr><br>json_decode:<br>";
-        var_dump($transaction);
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
+
+        $query_trans = "CALL `add_transaction`('".$transaction['trans_date']."', '$company_tin', '$selected_id', '".$transaction['clerk']."', @`msg`);";
+        $mysqli_2->query($query_trans);
+        $result = $mysqli_2->query("SELECT @`msg` as `trans_id`");
+        $row = mysqli_fetch_assoc($result);
+        $trans_id = $row['trans_id'];
         
-        foreach($transaction as $row => $item){
+        foreach($transaction['items'] as $row => $item){
             ?>
             <script>
             console.log("<?php echo $business_type; ?> Transaction:")
@@ -22,8 +26,6 @@
             </script>
             
             <?php
-            $transaction_date = $item['trans_date'];
-            $clerk = $item['clerk'];
             $vat_exempt_price = $item['vat_exempt_price'];
             $discount_price = $item['discount_price'];
             $payable_price = $item['payable_price'];
@@ -55,17 +57,18 @@
                     $drug_id = "";
                 }
 
-                $query = "CALL `add_transaction_pharmacy_drug`('$business_type', '$company_tin', '$transaction_date', '$selected_id', '$clerk', '$drug_id', '$quantity', '$unit_price', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
+                $query = "CALL `add_transaction_pharmacy_drug`('$business_type', '$trans_id','$company_tin', '$drug_id', '$quantity', '$unit_price', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
             } elseif( $business_type == "pharmacy" && array_key_exists("desc",$item)){
                 $desc = $item['desc'];
-                $query = "CALL `add_transaction_pharmacy_nondrug`('$business_type', '$company_tin', '$transaction_date', '$selected_id', '$clerk', '$desc', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
+                $query = "CALL `add_transaction_pharmacy_nondrug`('$business_type', '$trans_id','$company_tin', '$desc', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
             } elseif( $business_type == "food" && array_key_exists("desc",$item)){ // means item is not drug
                 $desc = $item['desc'];
-                $query = "CALL `add_transaction_food`('$business_type', '$company_tin', '$transaction_date', '$selected_id', '$clerk', '$desc', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
+                $query = "CALL `add_transaction_food`('$business_type', '$trans_id','$company_tin', '$desc', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
             } elseif( $business_type == "transportation" && array_key_exists("desc",$item)){ // means item is not drug
                 $desc = $item['desc'];
-                $query = "CALL `add_transaction_transportation`('$business_type', '$company_tin', '$transaction_date', '$selected_id', '$clerk', '$desc', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
+                $query = "CALL `add_transaction_transportation`('$business_type', '$trans_id','$company_tin', '$desc', '$vat_exempt_price', '$discount_price', '$payable_price', @`msg`)";
             }
+
             if($mysqli_2->query($query)){
                 $query2 = "SELECT @`msg` msg";
                 $result2 = $mysqli_2->query($query2);

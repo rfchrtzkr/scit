@@ -2,67 +2,25 @@
 
 
 
-</div> <!-- codes -->
+</div> <!-- codes simulation ng logic/variables/functions -->
 
 <br><br>
 
 <div>
 <?php
+    include('../backend/session.php');
+    include('../backend/conn_osca.php');
+    
+    $selected_id = $_SESSION['osca_id'];
+    $business_type = $_SESSION['business_type'];
+    $company_tin = $_SESSION['company_tin'];
 include("php_functions.php");
-/*
-echo "<br>output: ". simplify_generic_name("Paracetamol,   Ibuprofen");
-echo "<br>output: ". simplify_generic_name("Ibuprofen, Paracetamol");
-$drug = get_drug_details("3");
+include("new_transaction.php");
 
+var_dump($transaction);
+$query_trans = "CALL `add_transaction`('".$transaction['trans_date']."', '$company_tin', '$selected_id', '".$transaction['clerk']."', @`msg`);";
 
-$item['generic_name'] = arrange_generic_name("calcium carbonate,famotidine,magnesium hydroxide");
-$item['brand'] = "kremil-s advance"; // from pos
-$item['dose'] = (int)500; // from pos
-$item['unit'] = "mg"; // from pos
-
-$generic_name = $item['generic_name'];
-$brand = $item['brand'];
-$dose = $item['dose'];
-$unit = $item['unit'];
-$drug2 = get_drug_details("", "$generic_name", "$brand", "$dose", "$unit");
-
-var_dump($drug);
-var_dump($drug2);
-echo "<br><br><hr><br>";
-$int1 = (double)filter_var("100");
-$int2 = (float)filter_var("100");
-$int3 = (int)filter_var("100", FILTER_VALIDATE_INT);
-$int4 = filter_var("100323", FILTER_VALIDATE_INT);
-
-var_dump($int1);
-var_dump($int2);
-var_dump($int3);
-var_dump($int4);
-
-$json_string = '[
-    {
-    "clerk": "AL Manalon",
-    "generic_name": "calcium carbonate,famotidine,magnesium hydroxide",
-    "brand": "biogesic",
-    "dose": "500",
-    "unit": "mg",
-    "unit_price": "5.20",
-    "quantity": "1",
-    "vat_exempt_price": "65",
-    "discount_price": "13",
-    "payable_price": "52",
-    "trans_date": "2020-09-16 11:15:10"
-    }
-]';
-
-
-$transaction_from_pos = json_decode($json_string, true );
-$unregistered_drugs = verify_drugs($transaction_from_pos);
-
-var_dump($transaction_from_pos);
-var_dump($unregistered_drugs);
-
-*/
+echo $query_trans;
 
 $item['generic_name'] = arrange_generic_name("Sodium Ascorbate, aa");
 $item['brand'] = "Immunpro"; // from pos

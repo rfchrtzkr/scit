@@ -10,7 +10,7 @@
             {
             "clerk": "AL Manalon",
             "generic_name": "cetirizine",
-            "brand": "Brand 2",
+            "brand": "Watsons",
             "dose": "10",
             "unit": "mg",
             "unit_price": "6.25",
@@ -35,7 +35,7 @@
             },
             {
             "clerk": "AL Manalon",
-            "generic_name": "paracetamolx",
+            "generic_name": "paracetamol",
             "brand": "BIOGESIC",
             "dose": "500",
             "unit": "mg",
@@ -48,8 +48,8 @@
             },
             {
             "clerk": "AL Manalon",
-            "generic_name": "Sodium Ascorbate, aba",
-            "brand": "Immunpro",
+            "generic_name": "sodium ascorbate,zinc",
+            "brand": "immunpro",
             "dose": "500",
             "unit": "mg",
             "unit_price": "5.20",
@@ -61,17 +61,19 @@
             }
         ]';*/
 
+        
         // Toggle comment $json_string for simulation of data for: FOOD
         $json_string = '[
             {
-            "clerk": "XY Zinger",
-            "desc": "Meals for 3",
-            "vat_exempt_price": "892.86",
-            "discount_price": "178.57",
-            "payable_price": "714.29",
-            "trans_date": "2020-09-15 11:11:11"
+            "clerk": "Baxia Master",
+            "desc": "Frozen Siomai Pack 25s Pack",
+            "vat_exempt_price": "249.75",
+            "discount_price": "44.60",
+            "payable_price": "205.15",
+            "trans_date": "2020-09-17 11:12:48"
             }
         ]';
+        
     }
 
     // -- Below: ACTUAL WAY OF GETTING THE stringified transaction JSON FROM POS 
@@ -83,10 +85,11 @@
     $unregistered_drugs_json = [];
 
     $transaction = [];  // array storage for whole transaction
+    $transaction['items'] = [];  // array storage for whole transaction
     foreach($transaction_from_pos as $row => $item_from_pos){
         $item = [];
-        $item['trans_date'] = filter_var($item_from_pos['trans_date'], FILTER_SANITIZE_STRING);
-        $item['clerk'] = filter_var($item_from_pos['clerk'], FILTER_SANITIZE_STRING);
+        $trans_date = filter_var($item_from_pos['trans_date'], FILTER_SANITIZE_STRING);
+        $clerk = filter_var($item_from_pos['clerk'], FILTER_SANITIZE_STRING);
         $item['vat_exempt_price'] = filter_var($item_from_pos['vat_exempt_price'], FILTER_VALIDATE_FLOAT);
         $item['discount_price'] = filter_var($item_from_pos['discount_price'], FILTER_VALIDATE_FLOAT);
         $item['payable_price'] = filter_var($item_from_pos['payable_price'], FILTER_VALIDATE_FLOAT);
@@ -113,8 +116,11 @@
                 $item['desc'] = filter_var($item_from_pos['desc'], FILTER_SANITIZE_STRING); // from pos
             }
         }
-        $transaction[] = $item;
+        array_push($transaction['items'], $item);
     }
+
+    $transaction['trans_date'] = $trans_date;
+    $transaction['clerk'] = $clerk;
 
     if(count($unregistered_drugs) > 0){
         $unregistered_drugs_json = json_encode($unregistered_drugs);
