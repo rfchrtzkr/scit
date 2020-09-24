@@ -1,8 +1,6 @@
 <?php
     include_once("../backend/php_functions.php");
 
-
-
     // CODE BLOCK BELOW: simulation only
     {
         $unregistered_drugs_1 = array();

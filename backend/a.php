@@ -18,6 +18,8 @@ include("php_functions.php");
 include("new_transaction.php");
 
 var_dump($transaction);
+echo json_encode($transaction);
+
 $query_trans = "CALL `add_transaction`('".$transaction['trans_date']."', '$company_tin', '$selected_id', '".$transaction['clerk']."', @`msg`);";
 
 echo $query_trans;
@@ -73,4 +75,5 @@ $input_array = array("generic_name" => $generic_name,
 
 
 var_dump($input_array);
-
+echo "<BR><BR><HR><BR>";
+var_dump(read_qr_code("8fok93kd2u09j8dk"));

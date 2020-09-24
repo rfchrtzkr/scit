@@ -1,6 +1,6 @@
 
 
-<?php 
+<?php
     function determine_sex($sex_, $mode) {
         $sex_ = strtolower($sex_);
         if($mode == "display_long") {
@@ -291,7 +291,7 @@
     function simplify_generic_name($generic_name_in)
     {   
         try {
-            $generic_name_collective = str_replace('  ', ' ', $generic_name_in);
+            $generic_name_collective = trim(str_replace('  ', ' ', $generic_name_in));
             $generic_name_collective = str_replace(', ', ',', $generic_name_collective);
             $generic_names = explode(',', $generic_name_collective);
             $generic_name_string = "";
@@ -422,6 +422,35 @@
             return false;
         }
         mysqli_close($mysqli_function);
+    }
+
+    function read_qr_code($qr_code = "false")
+    {   
+        if($qr_code != "false"){
+            include('../backend/conn.php');
+            $mysqli_function = new mysqli($host,$user,$pass,$schema) or die($mysqli_function->error);
+
+            $query_function = " SELECT `first_name`, `last_name`, `desc`, `trans_date`, 
+                                        `city`, `province`, `nfc_serial`
+                                FROM `view_qr_request` qr
+                                INNER JOIN `view_members_with_guardian` m on qr.member_id = m.member_id
+                                WHERE qr.`token` = '$qr_code'
+                                ORDER BY `a_is_active` desc LIMIT 1;";
+            
+            if($result = $mysqli_function->query($query_function)){
+                $row_count = mysqli_num_rows($result);
+                if($row_count == 1) {
+                    return mysqli_fetch_assoc($result);
+                } else{
+                    return false;
+                }
+            }
+
+            else {
+                return false;
+            }
+            mysqli_close($mysqli_function);
+        }
     }
 
 

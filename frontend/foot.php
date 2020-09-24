@@ -1,19 +1,34 @@
-        </div></div>
-        <input type="hidden" id="bustype" name="bustype" value="<?php echo $_SESSION['business_type'];?>">
+        
+                <div id="qr_content"></div>
+            </div>
+        </div>
     </body>
 </html>
 
 <script>
+    var idle_interval = 5 * 1000;
+    function reload_home(){
+        $('#body').load("../frontend/home.php #home");
+    }
+    
     $(document).ready(function(){
         $("#read").click(function(){
             var input_nfc = $("#nfc_id").val();
-            var business_type = $("#bustype").val();
-            $('#body').load("../frontend/read.php", { input_nfc: input_nfc, business_type:business_type }, function(d){
+            $('#body').load("../frontend/read.php", { input_nfc: input_nfc}, function(d){
                 if(d == "false"){
-                    alert("Invalid user");
                     $('#body').load("../frontend/home.php #home");
                 }
-                //setTimeout(function() { reload_home(); }, 5000);
+                //setTimeout(function() { reload_home(); }, idle_interval);
+            });
+        });
+        $("#read_qr").click(function(){
+            var input_nfc = $("#nfc_id").val();
+            $('#qr_content').load("../frontend/read_qr.php", { qr_code: input_nfc}, function(d){
+                /*
+                if(d == "false"){
+                    $('#body').load("../frontend/home.php #home");
+                }*/
+                //setTimeout(function() { modal.style.display = "none"; }, idle_interval);
             });
         });
         $("#transaction").click(function(){
@@ -21,7 +36,6 @@
             var business_type = $("#bustype").val();
             $('#body').load("../frontend/transaction.php", function(d){
                 if(d == "false"){
-                    alert("Invalid user");
                     $('#body').load("../frontend/home.php #home");
                 }
             });

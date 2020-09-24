@@ -4,6 +4,7 @@
     *   compound_dosage_recent, max_basis_weekly, and max_basis_monthly
      */
     include('../backend/conn.php');
+    
     $mysqli_pharma_trans = new mysqli($host,$user,$pass,$schema) or die($mysqli_pharma_trans->error);
 
     $selected_id = $_SESSION['osca_id'];
@@ -25,6 +26,7 @@
     if($row_pharma_trans_count != 0){
         while($row_pharma_trans = mysqli_fetch_array($result_pharma_trans)) { // compute total transacted past month 
             if($business_type == "pharmacy"){
+                include_once('../backend/php_functions.php');
                 $dose = (int)$row_pharma_trans['dose'];
                 $quantity = (int)$row_pharma_trans['quantity'];
                 $is_otc = ($row_pharma_trans['is_otc'] == '1') ? true: false;

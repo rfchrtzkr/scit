@@ -3,7 +3,9 @@
     
 ?>
     <div class="col col-sm-10 contents" id="body">
+    
         <div id="home">
+        
             <?php
                 include('../backend/reset_member_session.php');
                 
@@ -28,6 +30,7 @@
                 <p>Office of the Senior Citizens Affairs</p>
                 </div>
             </div>
+            
         </div>
     </div>
 <?php

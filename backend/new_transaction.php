@@ -5,7 +5,7 @@
     // -- Below: simulation only
     {
         // Toggle comment $json_string for simulation of data for: PHARMACY
-        /*
+        
         $json_string = '[
             {
             "clerk": "AL Manalon",
@@ -27,7 +27,7 @@
             "dose": "500",
             "unit": "mg",
             "unit_price": "8.00",
-            "quantity": "7",
+            "quantity": "10",
             "vat_exempt_price": "50",
             "discount_price": "10",
             "payable_price": "40",
@@ -48,7 +48,7 @@
             },
             {
             "clerk": "AL Manalon",
-            "generic_name": "sodium ascorbate,zinc",
+            "generic_name": " sodium ascorbate, Zincx",
             "brand": "immunpro",
             "dose": "500",
             "unit": "mg",
@@ -59,10 +59,11 @@
             "payable_price": "52",
             "trans_date": "2020-09-17 21:11:11"
             }
-        ]';*/
+        ]';
 
         
         // Toggle comment $json_string for simulation of data for: FOOD
+        /*
         $json_string = '[
             {
             "clerk": "Baxia Master",
@@ -73,6 +74,7 @@
             "trans_date": "2020-09-17 11:12:48"
             }
         ]';
+        */
         
     }
 

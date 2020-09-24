@@ -1,8 +1,6 @@
 <?php 
-    if(isset($_POST['input_nfc']) && $_POST['input_nfc'] != "" && isset($_POST['business_type']))
+    if(isset($_POST['input_nfc']) && $_POST['input_nfc'] != "")
     {
-        include('../backend/php_functions.php');
-        
         $picture = "../resources/images/unknown_m_f.png";
         $osca_id = "";
         $selected_id = "";
@@ -13,9 +11,11 @@
         $bdate = "";
         $memship_date = "";
         $contact_number = "";
-        $member_exists = include('../backend/read.php');
+        include('../backend/read.php');
+        
         if($member_exists)
         {
+            include_once('../backend/php_functions.php');
             ?>
              <!-- TEMPORARY!!! -->
                 <?php $myJSON = json_encode($_SESSION); ?>
@@ -90,9 +90,9 @@
             </script>
             <?php
         } else {
-            echo 'false'; 
+            echo "false";
         }
     } else {
-        echo 'false'; 
+        echo "false"; 
     }
 ?>

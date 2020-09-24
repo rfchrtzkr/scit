@@ -158,7 +158,7 @@
                                     <b><?php echo "$brand $dose"."$unit @ $quantity pcs"?></b>
                                 </div>
                                 <div class="col col-12">
-                                    [ <?php echo $generic_name_string?> ]<br>
+                                    [ <?php echo ucwords($generic_name_string)?> ]<br>
                                 </div>
                             <?php 
                         } else {
@@ -288,7 +288,7 @@
                 $flagged = true;
                 $counter = 0;
                 ?>
-                <div id="myModal" class="modal">
+                <div id="msg_modal" class="modal">
                     <div class="modal-content">
                         <div class="modal-header">
                         </div>
@@ -328,7 +328,7 @@
             <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
         </div>
         <script>
-            var modal = document.getElementById("myModal");
+            var modal = document.getElementById("msg_modal");
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
@@ -347,8 +347,6 @@
                         resizable: false,
                         buttons: {
                             Yes: function() {
-                                // $(obj).removeAttr('onclick');                                
-                                // $(obj).parents('.Parent').remove();
                                 var trans = JSON.stringify(<?php echo json_encode($transaction); ?>);
                                 $.post("../backend/create_transaction.php", { accepted: true, transaction: trans}, function(d){
                                     if(d="true") {
@@ -377,7 +375,6 @@
                 });
                 
                 $("#accept").click(function(){
-                    //alert("accepted");
                     CreateTransaction('Are you sure');
                 });
             });
@@ -390,44 +387,4 @@
     } else {
         echo "false";
     }
-
-
-/*
-    btn.Accept click event ()
-    {
-        /*
-        if (data VALIDATED) {
-            convert DataTable to JSON;
-            stringify JSON;
-            if(Stringified JSON to Serial comm SENT SUCCESS)
-            {
-                // WAITING for return signal of Serial comm
-                // Convert Stringified JSON to JSON Object
-                // Store JSON Obect contents to C# List / variable  
-                // string received_data = JSON Object["received_data"]
-
-                if (received_data = "sucess") {
-                    new transaction
-
-                } elseif (received_data = "invalid_senior") {
-                    pop up msg: Senior Data is Invalid
-                    // invalid if wala nabasang Senior sa SCIT
-
-                } elseif (received_data = "invalid_drug") {
-                    open form: new drugs
-                        
-                }
-            } else {
-                // msg saying "Please establish a stable connection with the Senior Citizen Information Terminal"
-            }
-        } else {
-            re-validate data inputs in DataTable.
-            PS
-            pwedeng wag na lagyan tong else
-        }
-    }
-        */
-
-
-
 ?>
