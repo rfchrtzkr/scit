@@ -280,10 +280,8 @@
                 <script>
                     alert("The invalid drugs will be sent to the POS, the ACCEPT button will be inactive.\r\n Then the SCIT will display trans details while waiting for POS\r\n to send the [transaction details] + [new drug details]. \r\n Only then the ACCEPT TRANSACTION button will be active.");
                 </script>
-                
                 <?php
             }
-
             if(count($flagged_items) > 0) {
                 $flagged = true;
                 $counter = 0;
@@ -298,15 +296,12 @@
                                 <?php
                                     foreach($flagged_items as $row => $item){
                                         $counter++;
-
                                         $brand = ucwords($item['brand']);
                                         $generic_name = ucwords($item['generic_name']);
                                         $dose = $item['dose'];
                                         $unit = $item['unit'];
                                         $quantity = $item['quantity'];
-                                        
                                         echo "<li>Item #$counter: $brand [ $generic_name ] $dose"."$unit @ $quantity pcs</li>";
-                                        
                                     }
                                 ?>
                             </ul>

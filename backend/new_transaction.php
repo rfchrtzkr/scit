@@ -81,7 +81,21 @@
     // -- Below: ACTUAL WAY OF GETTING THE stringified transaction JSON FROM POS 
     // $json_string = $_POST['transaction_from_pos'];
 
-    // -- ACTUAL PROCESS 
+    // -- ACTUAL PROCESS
+
+    /*
+    if($_SESSION['business_type'] == "pharmacy") {
+
+    } elseif($_SESSION['business_type'] == "transportation") {
+
+    } elseif($_SESSION['business_type'] == "food") {
+
+
+    }*/
+
+    $business_type = $_SESSION['business_type'];
+    $json_file = fopen("/var/www/html/rpiserial/$business_type.json", "r");
+    $json_string = fread($json_file,filesize("/var/www/html/rpiserial/$business_type.json"));
     $transaction_from_pos = json_decode($json_string, true );
     $unregistered_drugs = verify_drugs($transaction_from_pos);
     $unregistered_drugs_json = [];
