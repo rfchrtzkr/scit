@@ -453,5 +453,36 @@
         }
     }
 
+    function read_from_serial($business_type = "")
+    {
+        // read from serial
+        // invoked in: new transaction
+        if($business_type != "")
+        {
+            $read_file_dest = "/var/www/html/rpiserial/$business_type.json";
+    
+            $json_file = fopen($read_file_dest, "r");
+            return fread($json_file,filesize($read_file_dest));
+        } else {
+            return false;
+        }
+
+    }
+
+    function read_from_serial_createDrug($status = false)
+    {
+        // read from serial drug creation
+        // invoked in: create_drug
+        if($status)
+        {
+            $read_file_dest = "/var/www/html/rpiserial/new_drug.json";
+            $json_file = fopen($read_file_dest, "r");
+            return fread($json_file,filesize($read_file_dest));
+        } else {
+            return false;
+        }
+
+    }
+
 
 ?>

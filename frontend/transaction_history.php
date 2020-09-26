@@ -9,8 +9,10 @@
         $selected_id = $_POST['osca_id'];
         $business_type = $_SESSION['business_type'];
         $company_tin = $_SESSION['company_tin'];
+        $show_drugs_button = "";
 
         if($business_type == "pharmacy"){
+            $show_drugs_button = '<div><button id="show_only_drugs"><span class="ui-button-text">Show Drugs Only</span></button></div>';
             $transaction_query = "SELECT `member_id`, `trans_date`, date(trans_date) `ddd`, `clerk`, `company_name` `company`, `branch`, `business_type`, `company_tin`,
                                     `desc_nondrug`, `generic_name`, `brand`, `dose`, `is_otc`, `max_monthly`, `max_weekly`, `unit`, `quantity`,
                                     `vat_exempt_price`, `discount_price`, `payable_price`
@@ -40,12 +42,7 @@
             <div class="title">
                 TRANSACTIONS HISTORY
             </div>
-            <div>
-                <!--input type="checkbox" name="filter" id="filter"> <label for="filter">Non-drugs</label-->
-                <button id="show_only_drugs">
-                    <span class="ui-button-text">Show Drugs Only</span>
-                </button>
-            </div>
+            <?php  echo $show_drugs_button; ?>
             <div class="transaction-history scrollbar-black">
         <?php
         

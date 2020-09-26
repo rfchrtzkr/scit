@@ -5,7 +5,7 @@
     // -- Below: simulation only
     {
         // Toggle comment $json_string for simulation of data for: PHARMACY
-        
+        /*
         $json_string = '[
             {
             "clerk": "AL Manalon",
@@ -60,7 +60,7 @@
             "trans_date": "2020-09-17 21:11:11"
             }
         ]';
-
+        */
         
         // Toggle comment $json_string for simulation of data for: FOOD
         /*
@@ -76,6 +76,20 @@
         ]';
         */
         
+        // Toggle comment $json_string for simulation of data for: TRANSPO
+        
+        $json_string = '[
+            {
+            "clerk": "AB Ignacio",
+            "desc": "Pasay to Guadalupe | Senior - SJT",
+            "vat_exempt_price": "22.32",
+            "discount_price": "4.46",
+            "payable_price": "17.86",
+            "trans_date": "2020-09-20 11:11:11"
+            }
+        ]';
+        
+        
     }
 
     // -- Below: ACTUAL WAY OF GETTING THE stringified transaction JSON FROM POS 
@@ -83,19 +97,13 @@
 
     // -- ACTUAL PROCESS
 
-    /*
-    if($_SESSION['business_type'] == "pharmacy") {
-
-    } elseif($_SESSION['business_type'] == "transportation") {
-
-    } elseif($_SESSION['business_type'] == "food") {
-
-
-    }*/
-
     $business_type = $_SESSION['business_type'];
-    $json_file = fopen("/var/www/html/rpiserial/$business_type.json", "r");
-    $json_string = fread($json_file,filesize("/var/www/html/rpiserial/$business_type.json"));
+
+    // read from serial
+    // Uncomment below if for use in raspi
+
+    //$json_string = read_from_serial($business_type);
+
     $transaction_from_pos = json_decode($json_string, true );
     $unregistered_drugs = verify_drugs($transaction_from_pos);
     $unregistered_drugs_json = [];

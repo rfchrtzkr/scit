@@ -12,8 +12,10 @@
         }
     }
 
-    // $unregistered_drugs = json_decode($_POST['unregisted_drugs']);
-    // $drugs_json_object = $unregistered_drugs;
+    // read from serial
+    // Uncomment below if for use in raspi
+    //$unregistered_drugs_1 = read_from_serial_createDrug($business_type);
+
 
     $drugs_json_object = $unregistered_drugs_1;
     $invalid_inputs = array();
