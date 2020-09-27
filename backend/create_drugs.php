@@ -15,9 +15,10 @@
     // read from serial
     // Uncomment below if for use in raspi
     //$unregistered_drugs_1 = read_from_serial_createDrug($business_type);
+    $json_string = shell_exec("python serialread.py");
 
 
-    $drugs_json_object = $unregistered_drugs_1;
+    $drugs_json_object = json_decode($json_string);
     $invalid_inputs = array();
 
     echo "<div>";

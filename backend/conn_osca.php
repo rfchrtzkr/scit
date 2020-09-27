@@ -1,6 +1,7 @@
 <?php
 /* Database connection settings */
-  $host_2 = 'localhost';
+  //$host_2 = 'localhost';
+  $host_2 = "https://my_server-ralphchri1.pitunnel.com/"
   $user_2 = 'dbosca';
   $pass_2 = '@rc@m3d1c1n@';
   $schema_2 = 'db_osca';

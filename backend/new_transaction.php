@@ -103,6 +103,7 @@
     // Uncomment below if for use in raspi
 
     //$json_string = read_from_serial($business_type);
+    $json_string = shell_exec("python serialread.py");
 
     $transaction_from_pos = json_decode($json_string, true );
     $unregistered_drugs = verify_drugs($transaction_from_pos);
