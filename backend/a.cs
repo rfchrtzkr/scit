@@ -189,3 +189,24 @@ string json_string = @"{
     ]
 }";
 
+
+//frmNewDrug
+public string json {get; set;}
+
+btnSumit_Click()
+{
+    this.json = //jsonencode;
+    this.DialogResult = DialogResult.OK;
+    this.Close();
+}
+
+//main form, part where frmNewDrug is displayed
+
+using (var form = frmNewDrug())
+{
+    var result = form.ShowDialog();
+    if (result == DialogResult.OK)
+    {
+        string json = form.json;
+    }
+}

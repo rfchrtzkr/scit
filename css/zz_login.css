@@ -1,7 +1,7 @@
 body{
     margin: 0;
     padding: 0;
-    background: #CFFFE5 ;
+    background: #7CCFCC ;
 }
 
 .box{
@@ -29,7 +29,7 @@ body{
     display: block;
     margin: 20px auto;
     text-align: center;
-    border: 2px solid #3498db;
+    border: 2px solid #7CCFCC;
     padding: 14px 10px;
     width: 200px;
     outline: none;
@@ -41,7 +41,7 @@ body{
 
 .box input[type="text"]:focus, .box input[type="password"]:focus{
     width: 280px;
-    border-color: #2ecc71;
+    border-color: #7CCFCC;
 }
 
 
@@ -51,7 +51,7 @@ body{
     display: block;
     margin: 20px auto;
     text-align: center;
-    border: 2px solid #2ecc71;
+    border: 2px solid #7CCFCC;
     width: 150px;
     padding: 14px 10px;
     outline: none;
@@ -62,7 +62,8 @@ body{
 } 
 
 .box input[type= "submit"]:hover, .box input[type= "submit"]:focus{
-    background: #2ecc71;
+    background: #7CCFCC;
+    color: #fff;
 }
 
 a:link{
