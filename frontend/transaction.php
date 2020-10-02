@@ -1,9 +1,26 @@
 <?php
     include('../backend/session.php');
     
+    ?>
+    <script>
+        alert("called transaction.php");
+    </script>
+    <?php
     if(isset($_SESSION['osca_id'])) {
+        
+        ?>
+        <script>
+            alert("OSCA_ID is set: <?php echo $_SESSION['osca_id']?>" );
+        </script>
+        <?php
         include_once('../backend/php_functions.php');
         include_once('../backend/terminal_scripts.php');
+        $_SESSION['transaction_from_pos'] = serial_read();
+        ?>
+        <script>
+            alert("Serial has been read: <?php var_dump($_SESSION['transaction_from_pos']);?>" );
+        </script>
+        <?php
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         $total_discount = 0;
         $total_amount_to_pay = 0;
@@ -93,7 +110,7 @@
                     }
                 }
 
-                // Populate transactions list from $transactions array
+                // Populate displayed Transactions list from $transactions array
                 foreach($transaction['items'] as $row => $item){
                     $counter++;
                     $vat_exempt_price = $formatter->format($item['vat_exempt_price']);
@@ -268,12 +285,12 @@
         <?php 
             // this will control the creation of unknown drugs.
             if(isset($_SESSION['unregistered_drugs']) && $_SESSION['unregistered_drugs']) {
-                include("../backend/create_drugs.php");
                 ?>
                 <script>
-                    alert("The invalid drugs will be sent to the POS, the ACCEPT button will be inactive.\r\n Then the SCIT will display trans details while waiting for POS\r\n to send the [transaction details] + [new drug details]. \r\n Only then the ACCEPT TRANSACTION button will be active.");
+                    alert("The invalid drugs has been sent to the POS, the ACCEPT button will be inactive.\r\n Then the SCIT will display trans details while waiting for POS\r\n to send the [transaction details] + [new drug details]. \r\n Only then the ACCEPT TRANSACTION button will be active.");
                 </script>
                 <?php
+                include("../backend/create_drugs.php");
             }
             if(count($flagged_items) > 0) {
                 $flagged = true;
@@ -308,8 +325,6 @@
                 if(!isset($_SESSION['unregistered_drugs']) || !$_SESSION['unregistered_drugs']) {
                     serial_invalid_dosage();
                 }
-                $_SESSION['transaction_from_pos'] = serial_read();
-                header("Location: ../frontend/transaction.php");
             } else {
                 $flagged = false;
                 

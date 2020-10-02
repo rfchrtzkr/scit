@@ -76,24 +76,31 @@
             </div>
             
             <script>
-                $(document).ready(function(){
-                    $("#trans_history").click(function(){
-                        var osca_id = "<?php echo $osca_id;?>";
-                        $.post("../frontend/transaction_history.php", {osca_id: osca_id }, function(d){
-                            if(d != "false"){
-                                $('#body').load("../frontend/transaction_history.php", { osca_id: osca_id });
-                            } else {
-                                $('#body').load("../frontend/home.php #home");
-                            }
-                        });
+            var business_type = '<?php echo $business_type;?>';
+            if(business_type != "pharmacy"){
+                setTimeout(function (){
+                    alert("Waiting for input . . .");
+                    $('#body').load("../frontend/transaction.php", function(d){
+                        if(d.trim() == "false"){
+                            $('#body').load("../frontend/home.php #home");
+                        }
+                    });
+                }, 5000); // How long do you want the delay to be (in milliseconds)? 
+            }
+            $(document).ready(function(){
+                $("#trans_history").click(function(){
+                    var osca_id = "<?php echo $osca_id;?>";
+                    $.post("../frontend/transaction_history.php", {osca_id: osca_id }, function(d){
+                        if(d.trim() != "false"){
+                            $('#body').load("../frontend/transaction_history.php", { osca_id: osca_id });
+                        } else {
+                            $('#body').load("../frontend/home.php #home");
+                        }
                     });
                 });
+            });
             </script>
             <?php
-            if($business_type != "pharmacy"){
-                $_SESSION['transaction_from_pos'] = serial_read();
-                header("Location: ../frontend/transaction.php");
-            }
         } else {
             echo "false";
         }

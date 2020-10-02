@@ -184,29 +184,39 @@
         </div>
             
         <script>
-            $(document).ready(function(){
-                var toggle_on = true;
-
-                $("#show_only_drugs").click(function(){
-                    $(".non-drug").toggle(50, "linear");
-                    if(toggle_on){
-                        $("span", this).text("Show All");
-                        toggle_on = false;
-                    } else {
-                        $("span", this).text("Show Drugs Only");
-                        toggle_on = true;
+        var business_type = '<?php echo $business_type;?>';
+        if(business_type == "pharmacy"){
+            setTimeout(function (){
+                $('#body').load("../frontend/transaction.php", function(d){
+                    if(d.trim() == "false"){
+                        $('#body').load("../frontend/home.php #home");
                     }
                 });
+            }, 5000); // How long do you want the delay to be (in milliseconds)? 
+        }
 
-                $("#return").click(function(){
-                    $('#body').load("../frontend/home.php #home");
-                });
+        $(document).ready(function(){
+            var toggle_on = true;
 
+            $("#show_only_drugs").click(function(){
+                $(".non-drug").toggle(50, "linear");
+                if(toggle_on){
+                    $("span", this).text("Show All");
+                    toggle_on = false;
+                } else {
+                    $("span", this).text("Show Drugs Only");
+                    toggle_on = true;
+                }
             });
+
+            $("#return").click(function(){
+                $('#body').load("../frontend/home.php #home");
+            });
+
+        });
         </script>
         <?php
         if($business_type == "pharmacy"){
-            $_SESSION['transaction_from_pos'] = serial_read();
             //header("Location: ../frontend/transaction.php"); // Redirecting To Home Page
         }
     } else {

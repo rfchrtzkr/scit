@@ -15,7 +15,7 @@
         $("#read").click(function(){
             var input_nfc = $("#nfc_id").val();
             $('#body').load("../frontend/read.php", { input_nfc: input_nfc}, function(d){
-                if(d == "false"){
+                if(d.trim() == "false"){
                     $('#body').load("../frontend/home.php #home");
                 }
                 //setTimeout(function() { reload_home(); }, idle_interval);
@@ -35,7 +35,7 @@
             var input_nfc = $("#nfc_id").val();
             var business_type = $("#bustype").val();
             $('#body').load("../frontend/transaction.php", function(d){
-                if(d == "false"){
+                if(d.trim() == "false"){
                     $('#body').load("../frontend/home.php #home");
                 }
             });

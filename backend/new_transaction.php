@@ -3,106 +3,17 @@
     include_once("../backend/php_functions.php");
     include_once('../backend/terminal_scripts.php');
 
-    // -- Below: simulation only
-    {
-        // Toggle comment $json_string for simulation of data for: PHARMACY
-        /*
-        $json_string = '[
-            {
-            "clerk": "AL Manalon",
-            "generic_name": "cetirizine",
-            "brand": "Watsons",
-            "dose": "10",
-            "unit": "mg",
-            "unit_price": "6.25",
-            "quantity": "7",
-            "vat_exempt_price": "39.06",
-            "discount_price": "7.81",
-            "payable_price": "31.25",
-            "trans_date": "2020-09-17 21:11:11"
-            },
-            {
-            "clerk": "AL Manalon",
-            "generic_name": "Carbocisteine, Zinc",
-            "brand": "Solmux",
-            "dose": "500",
-            "unit": "mg",
-            "unit_price": "8.00",
-            "quantity": "10",
-            "vat_exempt_price": "50",
-            "discount_price": "10",
-            "payable_price": "40",
-            "trans_date": "2020-09-17 21:11:11"
-            },
-            {
-            "clerk": "AL Manalon",
-            "generic_name": "paracetamol",
-            "brand": "BIOGESIC",
-            "dose": "500",
-            "unit": "mg",
-            "unit_price": "5.20",
-            "quantity": "1",
-            "vat_exempt_price": "65",
-            "discount_price": "13",
-            "payable_price": "52",
-            "trans_date": "2020-09-17 21:11:11"
-            },
-            {
-            "clerk": "AL Manalon",
-            "generic_name": " sodium ascorbate, Zincx",
-            "brand": "immunpro",
-            "dose": "500",
-            "unit": "mg",
-            "unit_price": "5.20",
-            "quantity": "1",
-            "vat_exempt_price": "65",
-            "discount_price": "13",
-            "payable_price": "52",
-            "trans_date": "2020-09-17 21:11:11"
-            }
-        ]';
-        */
-        
-        // Toggle comment $json_string for simulation of data for: FOOD
-        /*
-        $json_string = '[
-            {
-            "clerk": "Baxia Master",
-            "desc": "Frozen Siomai Pack 25s Pack",
-            "vat_exempt_price": "249.75",
-            "discount_price": "44.60",
-            "payable_price": "205.15",
-            "trans_date": "2020-09-17 11:12:48"
-            }
-        ]';
-        
-        // Toggle comment $json_string for simulation of data for: TRANSPO
-        
-        $json_string = '[
-            {
-            "clerk": "AB Ignacio",
-            "desc": "Pasay to Guadalupe | Senior - SJT",
-            "vat_exempt_price": "22.32",
-            "discount_price": "4.46",
-            "payable_price": "17.86",
-            "trans_date": "2020-09-20 11:11:11"
-            }
-        ]';
-        */
-    }
-
-    // -- Below: ACTUAL WAY OF GETTING THE stringified transaction JSON FROM POS 
-    // $json_string = $_POST['transaction_from_pos'];
-
-    // -- ACTUAL PROCESS
-
     $business_type = $_SESSION['business_type'];
 
-    // read from serial
-    // Uncomment below if for use in raspi
-
-    //$json_string = read_from_serial($business_type);
-    //$json_string = shell_exec("python serialread.py");
+    /*
+    $_SESSION['transaction_from_pos'] = serial_read();
+    ?>
+    <script>
+        alert("Serial has been read: <?php var_dump($_SESSION['transaction_from_pos']);?>" );
+    </script>
+    <?php
+    */
+    
     $transaction_from_pos_string = $_SESSION['transaction_from_pos'];
 
     $transaction_from_pos = json_decode($transaction_from_pos_string, true );
