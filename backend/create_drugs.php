@@ -12,16 +12,15 @@
             $unregistered_drugs_1[] = $drug;
         }
     }
-
     // read from serial
     // Uncomment below if for use in raspi
     //$unregistered_drugs_1 = read_from_serial_createDrug($business_type);
-    
     ?>
-    <script>
-        alert("Entered create_drug.php");
-    </script>
+        <script>
+            alert("Entered create_drug.php");
+        </script>
     <?php
+
     $json_string = serial_read();
 
     $drugs_json_object = json_decode($json_string);
