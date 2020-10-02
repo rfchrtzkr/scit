@@ -3,6 +3,7 @@
 
     include('../backend/session.php');
     include('../backend/php_functions.php');
+    include_once('../backend/terminal_scripts.php');
     if(isset($_POST['osca_id']))
     {
         include('../backend/conn.php');
@@ -203,7 +204,11 @@
 
             });
         </script>
-        <?php 
+        <?php
+        if($business_type == "pharmacy"){
+            $_SESSION['transaction_from_pos'] = serial_read();
+            header("Location: ../frontend/transaction.php"); // Redirecting To Home Page
+        }
     } else {
         echo "false";
     }

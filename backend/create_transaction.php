@@ -2,6 +2,7 @@
     include('../backend/session.php');
     include('../backend/conn_osca.php');
     include('../backend/php_functions.php');
+    include('../backend/terminal_scripts.php');
     
     $selected_id = $_SESSION['osca_id'];
     $business_type = $_SESSION['business_type'];
@@ -79,6 +80,7 @@
                     echo "Invalid company and business type $query";
                 } else if ($msg == "1") {
                     echo "true";
+                    serial_w_success();
                 }
             }
             else {

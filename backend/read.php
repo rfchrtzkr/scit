@@ -1,6 +1,8 @@
 <?php 
     include_once('../backend/conn.php');
     include_once('../backend/session.php');
+    include_once('../backend/terminal_scripts.php');
+
     if(isset($_POST['input_nfc'])){
         $input_nfc = $mysqli->real_escape_string($_POST['input_nfc']);
         $business_type = $_SESSION['business_type'];
@@ -40,7 +42,6 @@
                 $picture = "../resources/images/unknown_m_f.png";
             }
             $member_exists = true;
-            
         } else {
             $member_exists = false;
         }
@@ -48,4 +49,5 @@
     } else {
         $member_exists = false;
     }
+    senior_isValid($member_exists);
 ?>

@@ -1,6 +1,7 @@
 <?php
     include_once("../backend/session.php");
     include_once("../backend/php_functions.php");
+    include_once('../backend/terminal_scripts.php');
 
     // -- Below: simulation only
     {
@@ -74,7 +75,6 @@
             "trans_date": "2020-09-17 11:12:48"
             }
         ]';
-        */
         
         // Toggle comment $json_string for simulation of data for: TRANSPO
         
@@ -88,6 +88,7 @@
             "trans_date": "2020-09-20 11:11:11"
             }
         ]';
+        */
         
         
     }
@@ -103,10 +104,11 @@
     // Uncomment below if for use in raspi
 
     //$json_string = read_from_serial($business_type);
-    $json_string = shell_exec("python serialread.py");
+    //$json_string = shell_exec("python serialread.py");
+    $transaction_from_pos_string = $_SESSION['transaction_from_pos'];
 
-    $transaction_from_pos = json_decode($json_string, true );
-    $unregistered_drugs = verify_drugs($transaction_from_pos);
+    $transaction_from_pos = json_decode($transaction_from_pos_string, true );
+    $unregistered_drugs['drugs'] = verify_drugs($transaction_from_pos);
     $unregistered_drugs_json = [];
 
     $transaction = [];  // array storage for whole transaction
@@ -147,8 +149,10 @@
     $transaction['trans_date'] = $trans_date;
     $transaction['clerk'] = $clerk;
 
-    if(count($unregistered_drugs) > 0){
+    if(count($unregistered_drugs['drugs']) > 0){
+        $unregistered_drugs['msg'] = "invalid_drug";
         $unregistered_drugs_json = json_encode($unregistered_drugs);
+        write_invalid_drug($unregistered_drugs_json);
     }
     
 ?>

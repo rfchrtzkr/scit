@@ -3,6 +3,7 @@
     
     if(isset($_SESSION['osca_id'])) {
         include_once('../backend/php_functions.php');
+        include_once('../backend/terminal_scripts.php');
     
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         $total_discount = 0;
@@ -29,10 +30,12 @@
                     <script> console.log(<?php echo json_encode($_SESSION); ?>); </script>
                 <?php
                 
-                // get total of compound dosage in this transaction
+                // get total of ingredient dosage in this transaction
                 if($business_type == "pharmacy"){
 
                     if(count($unregistered_drugs) > 0){
+                        serial_invalid_drug();
+
                         $_SESSION['unregistered_drugs'] = true;
                         
                         // PROGRESS REMAINING:
@@ -43,19 +46,10 @@
                         // if the SCIT receives the $_POST['unregisted_drugs'],
                         // load the transaction.php  to the #body
 
-
-
-
                         // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-                        
                     } else {
                         unset($_SESSION['unregistered_drugs']);
                     }
@@ -311,6 +305,11 @@
                     </div> 
                 </div>
                 <?php
+                
+                if(!isset($_SESSION['unregistered_drugs']) || !$_SESSION['unregistered_drugs']) {
+                    serial_invalid_dosage();
+                }
+                serial_read();
             } else {
                 $flagged = false;
                 

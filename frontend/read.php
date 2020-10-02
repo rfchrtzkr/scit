@@ -1,4 +1,6 @@
 <?php 
+    include_once('../backend/session.php');
+    include_once('../backend/terminal_scripts.php');
     if(isset($_POST['input_nfc']) && $_POST['input_nfc'] != "")
     {
         $picture = "../resources/images/unknown_m_f.png";
@@ -11,6 +13,7 @@
         $bdate = "";
         $memship_date = "";
         $contact_number = "";
+        $json_string= null;
         include('../backend/read.php');
         
         if($member_exists)
@@ -74,10 +77,8 @@
             
             <script>
                 $(document).ready(function(){
-
                     $("#trans_history").click(function(){
                         var osca_id = "<?php echo $osca_id;?>";
-                        
                         $.post("../frontend/transaction_history.php", {osca_id: osca_id }, function(d){
                             if(d != "false"){
                                 $('#body').load("../frontend/transaction_history.php", { osca_id: osca_id });
@@ -89,6 +90,10 @@
                 });
             </script>
             <?php
+            if($business_type != "pharmacy"){
+                $_SESSION['transaction_from_pos'] = serial_read();
+                header("Location: ../frontend/transaction.php"); // Redirecting To Home Page
+            }
         } else {
             echo "false";
         }
@@ -96,3 +101,9 @@
         echo "false"; 
     }
 ?>
+
+<script>
+    var json = "<?php echo $json_string; ?>";
+    console.log(json);
+
+</script>
