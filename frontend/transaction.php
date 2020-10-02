@@ -4,7 +4,6 @@
     if(isset($_SESSION['osca_id'])) {
         include_once('../backend/php_functions.php');
         include_once('../backend/terminal_scripts.php');
-    
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         $total_discount = 0;
         $total_amount_to_pay = 0;
@@ -309,7 +308,8 @@
                 if(!isset($_SESSION['unregistered_drugs']) || !$_SESSION['unregistered_drugs']) {
                     serial_invalid_dosage();
                 }
-                serial_read();
+                $_SESSION['transaction_from_pos'] = serial_read();
+                header("Location: ../frontend/transaction.php");
             } else {
                 $flagged = false;
                 

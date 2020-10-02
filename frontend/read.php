@@ -92,7 +92,7 @@
             <?php
             if($business_type != "pharmacy"){
                 $_SESSION['transaction_from_pos'] = serial_read();
-                header("Location: ../frontend/transaction.php"); // Redirecting To Home Page
+                header("Location: ../frontend/transaction.php");
             }
         } else {
             echo "false";
@@ -105,5 +105,4 @@
 <script>
     var json = "<?php echo $json_string; ?>";
     console.log(json);
-
 </script>

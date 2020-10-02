@@ -207,7 +207,7 @@
         <?php
         if($business_type == "pharmacy"){
             $_SESSION['transaction_from_pos'] = serial_read();
-            header("Location: ../frontend/transaction.php"); // Redirecting To Home Page
+            //header("Location: ../frontend/transaction.php"); // Redirecting To Home Page
         }
     } else {
         echo "false";

@@ -89,8 +89,6 @@
             }
         ]';
         */
-        
-        
     }
 
     // -- Below: ACTUAL WAY OF GETTING THE stringified transaction JSON FROM POS 
