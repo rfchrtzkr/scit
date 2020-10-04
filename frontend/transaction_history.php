@@ -185,15 +185,6 @@
             
         <script>
         var business_type = '<?php echo $business_type;?>';
-        if(business_type == "pharmacy"){
-            setTimeout(function (){
-                $('#body').load("../frontend/transaction.php", function(d){
-                    if(d.trim() == "false"){
-                        $('#body').load("../frontend/home.php #home");
-                    }
-                });
-            }, 5000); // How long do you want the delay to be (in milliseconds)? 
-        }
 
         $(document).ready(function(){
             var toggle_on = true;
@@ -216,9 +207,6 @@
         });
         </script>
         <?php
-        if($business_type == "pharmacy"){
-            //header("Location: ../frontend/transaction.php"); // Redirecting To Home Page
-        }
     } else {
         echo "false";
     }

@@ -1,8 +1,26 @@
 <?php
 
 
+// invoked in BE/read_qr.php[4]
+function qr_read()
+{
+    $serial_location = "/var/www/html/qrscan";
+    $command = "python3"; //$command = "sudo python";
+    $data = shell_exec("$command $serial_location/qrscan.py");
+    return $data;
+}
 
-// invoked in frontend/read.php[93], transaction_history[208]
+// invoked in BE/read_nfc.php[4]
+function nfc_read()
+{
+    $serial_location = "/var/www/html/nfcread";
+    $command = "python"; //$command = "sudo python";
+    $data = shell_exec("$command $serial_location/nfcread.py");
+    return $data;
+}
+
+
+// invoked in BE/read_serial.php[4]
 function serial_read()
 {
     $serial_location = "/var/www/html/rpiserial";

@@ -7,7 +7,6 @@
     </script>
     <?php
     if(isset($_SESSION['osca_id'])) {
-        
         ?>
         <script>
             alert("OSCA_ID is set: <?php echo $_SESSION['osca_id']?>" );
@@ -15,12 +14,12 @@
         <?php
         include_once('../backend/php_functions.php');
         include_once('../backend/terminal_scripts.php');
-        $_SESSION['transaction_from_pos'] = serial_read();
-        ?>
-        <script>
-            alert("Serial has been read: <?php var_dump($_SESSION['transaction_from_pos']);?>" );
-        </script>
-        <?php
+        //$_SESSION['transaction_from_pos'] = serial_read();
+            ?>
+            <script>
+                //alert("Serial has been read: < ?php var_dump($_SESSION['transaction_from_pos']);?>" );
+            </script>
+            <?php
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         $total_discount = 0;
         $total_amount_to_pay = 0;
@@ -49,7 +48,14 @@
                 // get total of ingredient dosage in this transaction
                 if($business_type == "pharmacy"){
 
-                    if(count($unregistered_drugs) > 0){
+                    if(count($unregistered_drugs['drugs']) > 0){
+                        ?>
+                        <script>
+                        alert("displaying invalid_drugs in console");
+                        console.log(<?php echo json_encode($unregistered_drugs);?>);
+                        alert("DISPLAYED invalid_drugs in console");
+                        </script>
+                        <?php
                         serial_invalid_drug();
 
                         $_SESSION['unregistered_drugs'] = true;
@@ -342,14 +348,14 @@
                 if (event.target == modal) {
                     modal.style.display = "none";
                 }
-            } 
+            }
 
             function CreateTransaction(message) {
                 $('<div></div>').appendTo('body')
                     .html('<div><h6>' + message + '?</h6></div>')
                     .dialog({
                         modal: true,
-                        title: 'Delete message',
+                        title: 'Accept Transaction',
                         zIndex: 10000,
                         autoOpen: true,
                         width: 'auto',

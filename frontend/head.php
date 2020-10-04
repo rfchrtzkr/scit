@@ -25,6 +25,10 @@
         <br><button type="button" id="transaction">transaction</button>
         <br><a href="../backend/logout.php"><button type="button" id="logout">logout</button></a>
         <br><input type="text" id="nfc_id" name="nfc_id">
+        
+        <br><button type="button" id="serial_read">read transaction</button>
+        <br><button type="button" id="nfc_read">read nfc</button>
+        <br><button type="button" id="qr_read">read qr</button>
         </div>
         <div class="container">
             <div class="scit">

@@ -87,6 +87,7 @@
                     });
                 }, 5000); // How long do you want the delay to be (in milliseconds)? 
             }
+            
             $(document).ready(function(){
                 $("#trans_history").click(function(){
                     var osca_id = "<?php echo $osca_id;?>";
