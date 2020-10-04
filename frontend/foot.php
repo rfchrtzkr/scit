@@ -13,6 +13,55 @@
     }
     
     $(document).ready(function(){
+        $("body").on('click', "#exit", function () {
+            reload_home();
+        });
+        $("body").on('click', "#new_trans", function () {
+            $('#response').load("../backend/read_serial.php", function(read_serial_response){
+                //alert(read_serial_response);
+                if(read_serial_response.trim() != "false"){
+                    $('#body').load("../frontend/transaction.php", function(d){
+                        if(d.trim() == "false"){
+                            reload_home();
+                        }
+                    });
+                } else {
+                    alert("No transaction received");
+                }
+            });
+        });
+        $("body").on('click', "#nfc_read", function () {
+            $('#response').load("../backend/read_nfc.php", function(read_nfc_response){
+                alert(read_nfc_response);
+                if(read_nfc_response.trim() != "false"){                    
+                    $('#body').load("../frontend/read.php", { input_nfc: read_nfc_response.trim()}, function(d){
+                        if(d.trim() == "false"){
+                            $('#body').load("../frontend/home.php #home");
+                        }
+                        //setTimeout(function() { reload_home(); }, idle_interval);
+                    });
+                }
+            });
+        });
+        $("body").on('click', "#qr_read", function () {
+            $('#response').load("../backend/read_qr.php", function(read_qr_response){
+                alert(read_qr_response);
+                if(read_qr_response.trim() != "false"){
+                    $('#qr_content').load("../frontend/read_qr.php", { qr_code: read_qr_response.trim()}, function(d){
+                        /*
+                        if(d == "false"){
+                            $('#body').load("../frontend/home.php #home");
+                        }*/
+                        //setTimeout(function() { modal.style.display = "none"; }, idle_interval);
+                    });
+                }
+            });
+        });
+
+
+
+
+
         $("#read").click(function(){
             var input_nfc = $("#nfc_id").val();
             $('#body').load("../frontend/read.php", { input_nfc: input_nfc}, function(d){
@@ -34,8 +83,6 @@
         });
 
         $("#transaction").click(function(){
-            var input_nfc = $("#nfc_id").val();
-            var business_type = $("#bustype").val();
             $('#body').load("../frontend/transaction.php", function(d){
                 if(d.trim() == "false"){
                     $('#body').load("../frontend/home.php #home");
@@ -44,9 +91,6 @@
         });
 
         $("#serial_read").click(function(){
-            var input_nfc = $("#nfc_id").val();
-            var business_type = $("#bustype").val();
-            
             $('#response').load("../backend/read_serial.php", function(read_serial_response){
                 alert(read_serial_response);
                 if(read_serial_response.trim() != "false"){
@@ -54,35 +98,6 @@
                         if(d.trim() == "false"){
                             $('#body').load("../frontend/home.php #home");
                         }
-                    });
-                }
-            });
-        });
-        
-        $("#nfc_read").click(function(){
-            $('#response').load("../backend/read_nfc.php", function(read_nfc_response){
-                alert(read_nfc_response);
-                if(read_nfc_response.trim() != "false"){                    
-                    $('#body').load("../frontend/read.php", { input_nfc: read_nfc_response}, function(d){
-                        if(d.trim() == "false"){
-                            $('#body').load("../frontend/home.php #home");
-                        }
-                        //setTimeout(function() { reload_home(); }, idle_interval);
-                    });
-                }
-            });
-        });
-        
-        $("#qr_read").click(function(){
-            $('#response').load("../backend/read_qr.php", function(read_qr_response){
-                alert(read_qr_response);
-                if(read_qr_response.trim() != "false"){
-                    $('#qr_content').load("../frontend/read_qr.php", { qr_code: read_qr_response}, function(d){
-                        /*
-                        if(d == "false"){
-                            $('#body').load("../frontend/home.php #home");
-                        }*/
-                        //setTimeout(function() { modal.style.display = "none"; }, idle_interval);
                     });
                 }
             });

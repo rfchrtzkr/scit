@@ -7,9 +7,10 @@
         $input_nfc = $mysqli->real_escape_string($_POST['input_nfc']);
         $business_type = $_SESSION['business_type'];
         $format_memdate = "concat(day(`memship_date`), ' ', monthname(`memship_date`), ' ', year(`memship_date`))";
-        $format_bdate = "concat(day(`bdate`), ' ', monthname(`bdate`), ' ', year(`bdate`))";
+        $format_bdate = "CONCAT(LEFT(bdate,length(bdate)-4), ' 19**')";
+
         $query = "SELECT `member_id`,	`osca_id`,	`nfc_serial`,	`password`,	`first_name`,	`middle_name`,	`last_name`,
-                    $format_bdate  `bdate`,	`sex`,	`contact_number`,	 $format_memdate `memship_date`, `picture` 
+                    $format_bdate  `bdate`,	`sex`,	`contact_number`,	 $format_memdate `memship_date`, `picture`, `city`, `province`
                     FROM `view_members_with_guardian` WHERE `nfc_serial` = '$input_nfc' ORDER BY `a_is_active` DESC LIMIT 1";
         $result = $mysqli->query($query);
         $row_count = mysqli_num_rows($result);
@@ -24,11 +25,13 @@
             $last_name =  $row['last_name'];
             $sex2 =  $row['sex'];
             $bdate =  $row['bdate'];
+            $city =  $row['city'];
+            $province =  $row['province'];
             $memship_date =  $row['memship_date'];
-            $contact_number =  $row['contact_number'];
+            $fullname = strtoupper("$first_name $middle_name $last_name");
             
             $_SESSION['osca_id'] = $row['osca_id'];
-            $_SESSION['sr_full_name'] = ucwords($row['first_name'] . " " . $row['last_name']);
+            $_SESSION['sr_full_name'] = $fullname;
 
             if($_SESSION['business_type'] == 'pharmacy') {
                 include('../backend/read_pharmacy_transactions.php');

@@ -61,7 +61,9 @@
         else {return false;}
     }
 
-    function read_address($selected_id, $edit=false, $type="member"){
+
+    function read_address2($selected_id, $type="member")
+    {
         if(isset($selected_id))
         {
             include('../backend/conn.php');
@@ -84,50 +86,20 @@
                                 INNER JOIN `address` `a` ON `ajt`.`address_id` = a.`id`
                                 WHERE g.`id` = '$selected_id'";
             }
-            else {}
-
-            if($edit) {
-                $result = $mysqli->query($address_query);
-                $row_count = mysqli_num_rows($result);
-                if($row_count == 0) { echo "<p class='lead'>No address on record</p>";} else
-                {
-                    $address_counter = 1;
-                    while($row = mysqli_fetch_array($result))
-                    {
-                        $address_id = $row['address_id'];
-                        $address1 = $row['address1'];
-                        $address2 = $row['address2'];
-                        $city = $row['city'];
-                        $province = $row['province'];
-                        if($row['is_active'] == '1'){$is_active = true;}else{$is_active=false;}
-                        echo "<p class='disp_address' id='addNum_$address_id'>Address $address_counter: $address1, $address2, $city, $province ";
-                        if($is_active){echo "<small class='text-muted'>(Primary)</small> ";}else{}
-                        echo '<button class="ml-auto btn btn-link edit edit_address"><i class="fa fa-edit"></i></button></p>';
-                        $address_counter++;
-                    }
-                }
-            }
-            else {
-                $result = $mysqli->query($address_query);
-                $row_count = mysqli_num_rows($result);
-                if($row_count == 0) { echo "<p class='lead'>No address on record</p>";} else
-                {
-                    $address_counter = 1;
-                    while($row = mysqli_fetch_array($result))
-                    {
-                        $address1 = $row['address1'];
-                        $address2 = $row['address2'];
-                        $city = $row['city'];
-                        $province = $row['province'];
-                        if($row['is_active'] == '1'){$is_active = true;}else{$is_active=false;}
-                        echo "<p>Address $address_counter: $address1, $address2, $city, $province ";
-                        if($is_active){echo "<small class='text-muted'>(Primary)</small></p>";}else{echo "</p>";}
-                        $address_counter++;
-                    }
-                }
+            
+            $result = $mysqli->query($address_query);
+            $row_count = mysqli_num_rows($result);
+            if($row_count > 0){
+                return mysqli_fetch_array($result);
+            } else {
+                // id does not have address
+                return false;
             }
             mysqli_close($mysqli);
-        } else {echo "ID does not exist";}
+        } else {
+            // no id given
+            return false;
+        }
     }
 
     function read_guardian($osca_id, $edit=true){

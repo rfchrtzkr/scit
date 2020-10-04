@@ -3,6 +3,16 @@ html { /* TEMPO ONLY. SAKIT LANG KASI SA MATA */
     /*background: black;
     filter: invert(1) hue-rotate(180deg);*/
 }
+
+#home{
+    height: 100%;
+    display: flex;
+    flex-direction:  column;
+}
+
+.home-buttons {
+    flex-grow: 1;
+}
 .scit {
     position: relative;
     margin: auto;
@@ -10,20 +20,16 @@ html { /* TEMPO ONLY. SAKIT LANG KASI SA MATA */
     max-width: 600px;
     min-height: 1024px;
     outline: black;
-    outline-style: dotted;
+    outline-width: 1px;
 
     display:flex;
     flex-direction: column;
     background-color: #f9ea8f;
-    background-image: linear-gradient(315deg, #f9ea8f 0%, #aff1da 74%);
+    background-image: linear-gradient(180deg, #9ce0df 5%, #b9dfde 40%);
 
     font-size: 50
 }
 
-.date-time {
-    padding-top: 10px;
-    height: 3em;
-}
 .contents {
     position: absolute;
     top: 50px;
@@ -31,8 +37,9 @@ html { /* TEMPO ONLY. SAKIT LANG KASI SA MATA */
     height: 924px;
     
     outline: black;
-    outline-style: groove;
-    background-color: #aff1da;
+    outline-width: thick;
+    border-radius: 0 0 5px 5px;
+    background-color: #9ce0df;
     
     display: -webkit-box;
     display: -moz-box;
@@ -46,6 +53,27 @@ html { /* TEMPO ONLY. SAKIT LANG KASI SA MATA */
 
 }
 
+.establishment-details {
+    margin-bottom: 3rem;
+}
+.establishment-name {
+    text-align: center;
+    margin-top: 3rem;
+}
+.establishment-branch {
+    text-align: center;
+    margin-top: 1rem;
+}
+.home-footer{
+    margin-top:auto;
+    text-align: center;
+}
+
+.date-time {
+    padding-top: 10px;
+    height: 3em;
+}
+
 span.date{
     position: absolute;
     left: 50px;
@@ -57,15 +85,15 @@ span.time{
 }
 
 div.logo {
-    height: 336px;
-    width: 336px;
+    height: 300px;
+    width: 300px;
     margin: auto;
     margin-top: 50px;
 }
-img.logo {
+div.logo > img {
     display: block;
-    max-width:336px;
-    max-height:336px;
+    max-width:100%;
+    max-height:100%;
     width: auto;
     height: auto;
 }
@@ -74,8 +102,66 @@ img.logo {
     margin:auto;
 }
 img.avatar{
+    background: #fff;
+    border-radius: 10%;
+    padding: 0.5rem;
     height: 100%;
     width: 100%;
+}
+
+
+
+.btn-toggle:active, .btn-toggle:hover, .btn-toggle:focus {
+    outline:none !important;
+    opacity: 0.8;
+}
+
+.btn-toggle {
+    display: inline-block;
+    font-weight: 400;
+    color: #42828a;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.btn-light:active, .btn-light:focus, .btn-exit:active, .btn-exit:focus {
+    outline:none !important;
+}
+
+.btn-light {
+    color: #fff;
+    background-color: #58b3be;
+    border-color: #dae0e5;
+    margin-top: 3px;
+  }
+  .btn-light:hover {
+    color: #000;
+    background-color: #9ce0df;
+    border-color: #dae0e5;
+  }
+  
+
+.btn-exit {
+    color: #fff;
+    background-color: #ff7477;
+    border-color: #dae0e5;
+    margin: 3px 0;
+}
+.btn-exit:hover {
+    color: #fff;
+    background-color: #c82333;
+    border-color: rgba(0, 0, 0, 0);
 }
 
 div.foot {
@@ -97,16 +183,42 @@ div.foot {
     color: gray;
 }
 
-.member-details > .row {
-    margin-bottom: 20px;
-    flex-grow: 1;
+.member-details{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
 }
+
+
+.member-details > li.profile-item {
+    padding: 0.5rem !important;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  
+div.title{
+    width: 10rem;
+    display: inline-block;
+  }
+  
+  
+  div.subtitle{
+    font-size: smaller;
+    color: #7e7e7e;
+    font-style: italic;
+  }
 
 
 
 .transaction {
     outline-color: black;
-    background-color: white;
+    background-color: #f7f8f6;
     overflow: auto;
     flex-grow: 1;
 }
@@ -119,9 +231,9 @@ div.foot {
 
     height: 130px;
     padding: 20px 0px;
-    -webkit-box-shadow: inset 0px 9px 15px 0px rgba(0,0,0,0.17);
-    -moz-box-shadow: inset 0px 9px 15px 0px rgba(0,0,0,0.17);
-    box-shadow: inset 0px 9px 15px 0px rgba(0,0,0,0.17);
+    -webkit-box-shadow: inset 0px 9px 15px 0px rgba(0,0,0,0.08);
+    -moz-box-shadow: inset 0px 9px 15px 0px rgba(0,0,0,0.08);
+    box-shadow: inset 0px 9px 15px 0px rgba(0,0,0,0.08);
 }
 
 .transaction > .row, .transaction-history > .row{
@@ -132,7 +244,7 @@ div.foot {
 
 .transaction-history {
     outline-color: black;
-    background-color: white;
+    background-color: #f7f8f6;
     overflow: auto;
 
     width: 100%;
@@ -145,6 +257,17 @@ div.foot {
     color: #fff !important;
 }
 
+div.eol{
+    display: block;
+    text-align: center;
+    color: #7e7e7e;
+    border-top: 1px solid #dee2e6 !important;
+    padding: 2rem 0 !important;
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+  }
 
 .transaction-history > .recent {
     color: black;
@@ -166,11 +289,10 @@ div.foot {
     text-align: right;
 }
 
-.title {
+.trans-title {
     font-size: larger;
     font-weight: bold;
     text-align: center;
-    text-decoration-line: underline;
     padding-bottom: 20px;
 }
 

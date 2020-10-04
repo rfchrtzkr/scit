@@ -14,31 +14,33 @@
         <?php
         include_once('../backend/php_functions.php');
         include_once('../backend/terminal_scripts.php');
-        //$_SESSION['transaction_from_pos'] = serial_read();
             ?>
             <script>
+                console.log(<?php echo json_decode($_SESSION['transaction_from_pos'], true)?>);
+                alert("Transaction has been read (see console");
                 //alert("Serial has been read: < ?php var_dump($_SESSION['transaction_from_pos']);?>" );
             </script>
             <?php
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         $total_discount = 0;
         $total_amount_to_pay = 0;
-        $transaction_date = "";
+        $trans_date = "";
         $clerk = "";
         $flagged_items = [];
         $business_type = $_SESSION['business_type'];
         ?>
-        <div class="title">
+        <div class="trans-title">
             TRANSACTION
         </div>
-        <div class="title user">
+        <div class="trans-title user">
             <?php echo $_SESSION['sr_full_name']; ?>
         </div>
         <div class="transaction scrollbar-black" id="trans123">
             <?php
-            {
-                $counter = 0;
-                include('../backend/new_transaction.php');
+            
+            $counter = 0;
+            include('../backend/new_transaction.php');
+            if(isset($_SESSION['transaction_from_pos '])){
                 $_SESSION['transaction'] = $transaction;
                 
                 ?>
@@ -255,6 +257,9 @@
                         <?php
                     }
                 }
+            } else {
+                echo "<div class='eol'>Transaction has not been set</div>";
+                $flagged = true;
             }
             ?>
         </div>
@@ -337,10 +342,8 @@
             } ?>
             
         <div class="foot">
-            <button type="button" class="btn btn-block btn-success btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
-        </div>
-        <div class="foot">
-            <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
+            <button type="button" class="btn btn-block btn-light btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
+                <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
         </div>
         <script>
             var modal = document.getElementById("msg_modal");
@@ -361,7 +364,7 @@
                         width: 'auto',
                         resizable: false,
                         buttons: {
-                            Yes: function() {
+                            Accept: function() {
                                 var trans = JSON.stringify(<?php echo json_encode($transaction); ?>);
                                 $.post("../backend/create_transaction.php", { accepted: true, transaction: trans}, function(d){
                                     if(d="true") {
@@ -373,9 +376,8 @@
                                 });
                                 $(this).dialog("close");
                             },
-                            No: function() {
-                                $('#body').load("../frontend/home.php #home");
-                                $(this).dialog("close");
+                            Cancel: function() {
+                                $(this).remove();
                             }
                         },
                         close: function(event, ui) {
@@ -385,12 +387,8 @@
             };
 
             $(document).ready(function(){
-                $("#return").click(function(){
-                    $('#body').load("../frontend/home.php #home");
-                });
-                
                 $("#accept").click(function(){
-                    CreateTransaction('Are you sure');
+                    CreateTransaction('Are transaction details correct?');
                 });
             });
             console.log("Session vars after encode:");

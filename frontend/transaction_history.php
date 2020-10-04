@@ -13,7 +13,8 @@
         $show_drugs_button = "";
 
         if($business_type == "pharmacy"){
-            $show_drugs_button = '<div><button id="show_only_drugs"><span class="ui-button-text">Show Drugs Only</span></button></div>';
+            
+            $show_drugs_button = '<div><button class="btn-toggle" id="show_only_drugs"><div id="label"><i class="fas fa-shopping-cart"></i> + <i class="fas fa-capsules"></i></div></button></div>';
             $transaction_query = "SELECT `member_id`, `trans_date`, date(trans_date) `ddd`, `clerk`, `company_name` `company`, `branch`, `business_type`, `company_tin`,
                                     `desc_nondrug`, `generic_name`, `brand`, `dose`, `is_otc`, `max_monthly`, `max_weekly`, `unit`, `quantity`,
                                     `vat_exempt_price`, `discount_price`, `payable_price`
@@ -40,7 +41,7 @@
         $result = $mysqli->query($transaction_query);
         $row_count = mysqli_num_rows($result);
         ?>
-            <div class="title">
+            <div class="trans-title">
                 TRANSACTIONS HISTORY
             </div>
             <?php  echo $show_drugs_button; ?>
@@ -180,7 +181,8 @@
         ?>
             </div>
         <div class="foot">
-            <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
+            <button type="button" class="btn btn-block btn-light btn-lg" id="new_trans">New Transaction</button>
+                <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
         </div>
             
         <script>
@@ -192,16 +194,12 @@
             $("#show_only_drugs").click(function(){
                 $(".non-drug").toggle(50, "linear");
                 if(toggle_on){
-                    $("span", this).text("Show All");
+                    $("div#label", this).html('<i class="fas fa-capsules">');
                     toggle_on = false;
                 } else {
-                    $("span", this).text("Show Drugs Only");
+                    $("div#label", this).html('<i class="fas fa-shopping-cart"></i> + <i class="fas fa-capsules">');
                     toggle_on = true;
                 }
-            });
-
-            $("#return").click(function(){
-                $('#body').load("../frontend/home.php #home");
             });
 
         });

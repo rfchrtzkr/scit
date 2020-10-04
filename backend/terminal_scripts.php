@@ -5,7 +5,7 @@
 function qr_read()
 {
     $serial_location = "/var/www/html/qrscan";
-    $command = "python3"; //$command = "sudo python";
+    $command = "sudo python3"; //$command = "sudo python";
     $data = shell_exec("$command $serial_location/qrscan.py");
     return $data;
 }
@@ -14,7 +14,7 @@ function qr_read()
 function nfc_read()
 {
     $serial_location = "/var/www/html/nfcread";
-    $command = "python"; //$command = "sudo python";
+    $command = "sudo python"; //$command = "sudo python";
     $data = shell_exec("$command $serial_location/nfcread.py");
     return $data;
 }
