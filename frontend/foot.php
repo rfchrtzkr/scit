@@ -53,11 +53,19 @@
                 alert(read_qr_response);
                 if(read_qr_response.trim() != "false"){
                     $('#qr_content').load("../frontend/read_qr.php", { qr_code: read_qr_response.trim()}, function(d){
-                        /*
-                        if(d == "false"){
+                        if(d.trim() == "invalid"){
+                            MsgBox_Invalid("The QR does not exist.", "Invalid QR Code");
                             $('#body').load("../frontend/home.php #home");
-                        }*/
-                        //setTimeout(function() { modal.style.display = "none"; }, idle_interval);
+                        } else if(d.trim() == "expired"){
+                            MsgBox_Invalid("The request has already been expired. Please request a new QR code.", "QR Code Expired");
+                            $('#body').load("../frontend/home.php #home");
+                        } else if (d.trim() == "used"){
+                            MsgBox_Invalid("The request has already been used.", "QR Code Used");
+                            $('#body').load("../frontend/home.php #home");
+                        } else {
+                            MsgBox_Invalid("There is something wrong with your request.", "QR Code Invalid");
+                            $('#body').load("../frontend/home.php #home");
+                        }
                     });
                 }
             });
