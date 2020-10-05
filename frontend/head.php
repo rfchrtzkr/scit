@@ -20,11 +20,13 @@
         <link rel="stylesheet" type="text/css" href="../css/scit.css">
     </head>
     <body>
-        <div class="position-fixed" style="display:none;">
+        <div class="position-fixed">
+        <!--div class="position-fixed" style="display:none;"-->
             <br><a href="home.php"><button type="button">home</button></a>
             <br><button type="button" id="read">read NFC</button>
             <br><button type="button" id="read_qr">read QR</button>
             <br><button type="button" id="transaction">transaction</button>
+            <br><button type="button" id="sendtoJSON">Session to JSON</button>
             <br><a href="../backend/logout.php"><button type="button" id="logout">logout</button></a>
             <br><input type="text" id="nfc_id" name="nfc_id">
         </div>

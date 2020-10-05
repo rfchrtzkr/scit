@@ -16,7 +16,7 @@
         $json_string= null;
         include('../backend/read.php');
         
-        if($member_exists)
+        if($member_exists && $nfc_active)
         {
             include_once('../backend/php_functions.php');
             ?>
@@ -68,8 +68,8 @@
             });
             </script>
             <?php
-        } else {
-            echo "false";
+        } elseif($member_exists && !$nfc_active) {
+            echo "inactive";
         }
     } else {
         echo "false"; 

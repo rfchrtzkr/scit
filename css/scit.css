@@ -1,8 +1,9 @@
-
-html { /* TEMPO ONLY. SAKIT LANG KASI SA MATA */
+/*
+html { /* TEMPO ONLY. SAKIT LANG KASI SA MATA 
     /*background: black;
-    filter: invert(1) hue-rotate(180deg);*/
+    filter: invert(1) hue-rotate(180deg);
 }
+*/
 
 #home{
     height: 100%;
@@ -147,20 +148,20 @@ img.avatar{
   }
   .btn-light:hover {
     color: #000;
-    background-color: #9ce0df;
+    background-color: #7ccfcc;
     border-color: #dae0e5;
   }
   
 
 .btn-exit {
     color: #fff;
-    background-color: #ff7477;
+    background-color: #ff5353;
     border-color: #dae0e5;
     margin: 3px 0;
 }
 .btn-exit:hover {
-    color: #fff;
-    background-color: #c82333;
+    color: #9e0000;
+    background-color: #ff7477;
     border-color: rgba(0, 0, 0, 0);
 }
 
