@@ -147,7 +147,7 @@ LEFT JOIN company c ON cr.company_id = c.id
 -- view_drugs
 DROP VIEW IF EXISTS `view_drugs`;
 CREATE VIEW `view_drugs` AS 
-SELECT id FROM `db_osca`.`drug`;
+SELECT * FROM `db_osca`.`drug`;
 
 -- view_qr_request
 DROP VIEW IF EXISTS `view_qr_request`;

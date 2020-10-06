@@ -46,13 +46,8 @@
 
                                     echo "<p>$desc</p>";
                                 ?>
-<<<<<<< HEAD
                                 <button class="btn btn-lg btn-light btn-block" id="accept">Accept</button>
                                 <button class="btn btn-lg btn-danger btn-block" id="btnCancel">Cancel</button>
-=======
-                                <button class="btn btn-lg btn-dark" id="accept">Accept</button>
-                                <button class="btn btn-lg btn-danger" id="btnCancel">Cancel</button>
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
                             </div>
                             <div class="modal-footer">
                             </div>

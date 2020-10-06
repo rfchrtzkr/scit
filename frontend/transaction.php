@@ -14,16 +14,6 @@
         <?php
         include_once('../backend/php_functions.php');
         include_once('../backend/terminal_scripts.php');
-<<<<<<< HEAD
-=======
-            ?>
-            <script>
-                console.log(<?php echo json_decode($_SESSION['transaction_from_pos'], true)?>);
-                alert("Transaction has been read (see console");
-                //alert("Serial has been read: < ?php var_dump($_SESSION['transaction_from_pos']);?>" );
-            </script>
-            <?php
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         $total_discount = 0;
         $total_amount_to_pay = 0;
@@ -40,7 +30,6 @@
         </div>
         <div class="transaction scrollbar-black" id="trans123">
             <?php
-<<<<<<< HEAD
 
             
             // this will control the creation of unknown drugs.
@@ -58,13 +47,6 @@
             include('../backend/new_transaction.php');
             if(isset($_SESSION['transaction_from_pos']) || !empty($_SESSION['transaction_from_pos'])){
                 $_SESSION['transaction'] = json_decode(json_encode($transaction),true);
-=======
-            
-            $counter = 0;
-            include('../backend/new_transaction.php');
-            if(isset($_SESSION['transaction_from_pos '])){
-                $_SESSION['transaction'] = $transaction;
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
                 
                 ?>
                     <script> console.log(<?php echo json_encode($_SESSION); ?>); </script>
@@ -317,20 +299,7 @@
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
         <?php
-=======
-        <?php 
-            // this will control the creation of unknown drugs.
-            if(isset($_SESSION['unregistered_drugs']) && $_SESSION['unregistered_drugs']) {
-                ?>
-                <script>
-                    alert("The invalid drugs has been sent to the POS, the ACCEPT button will be inactive.\r\n Then the SCIT will display trans details while waiting for POS\r\n to send the [transaction details] + [new drug details]. \r\n Only then the ACCEPT TRANSACTION button will be active.");
-                </script>
-                <?php
-                include("../backend/create_drugs.php");
-            }
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
             if(count($flagged_items) > 0) {
                 $flagged = true;
                 $counter = 0;
@@ -375,16 +344,6 @@
                 <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
         </div>
         <script>
-<<<<<<< HEAD
-=======
-            var modal = document.getElementById("msg_modal");
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-            }
-
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
             function CreateTransaction(message) {
                 $('<div></div>').appendTo('body')
                     .html('<div><h6>' + message + '?</h6></div>')
@@ -421,7 +380,6 @@
             $(document).ready(function(){
                 $("#accept").click(function(){
                     CreateTransaction('Are transaction details correct?');
-<<<<<<< HEAD
                 });
                 
                 $("body").on('click', "#new_trans_2", function () {
@@ -438,8 +396,6 @@
                             MsgBox_Invalid("No transaction received!", "Invalid Serial Read");
                         }
                     });
-=======
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
                 });
 
             });

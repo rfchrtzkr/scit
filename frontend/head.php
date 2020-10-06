@@ -21,11 +21,7 @@
     </head>
     <body>
         <!--div class="position-fixed"-->
-<<<<<<< HEAD
         <div class="position-fixed"  style="display:none;">
-=======
-        <div class="position-fixed" style="display:none;">
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
             <br><a href="home.php"><button type="button">home</button></a>
             <br><button type="button" id="read">read NFC</button>
             <br><button type="button" id="read_qr">read QR</button>

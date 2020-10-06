@@ -21,11 +21,7 @@
         </script>
     <?php
 
-<<<<<<< HEAD
     $json_string = serial_read_nowait();
-=======
-    $json_string = serial_read();
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
 
     $drugs_json_object = json_decode($json_string);
     $invalid_inputs = array();

@@ -20,21 +20,8 @@
     
     
     if(isset($_SESSION['transaction_from_pos'])){
-<<<<<<< HEAD
-        ?>
-        <script>
-            alert("Entered new_transaction.php" );
-        </script>
-        <?php
         $transaction_from_pos_string = $_SESSION['transaction_from_pos'];
         $transaction_from_pos = json_decode($transaction_from_pos_string, true );
-        echo '$transaction_from_pos: <br>';
-        var_dump($transaction_from_pos);
-        echo "<br><hr>";
-=======
-        $transaction_from_pos_string = $_SESSION['transaction_from_pos'];
-        $transaction_from_pos = json_decode($transaction_from_pos_string, true );
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
         $unregistered_drugs['drugs'] = verify_drugs($transaction_from_pos);
         foreach($transaction_from_pos as $row => $item_from_pos){
             $item = [];
@@ -78,8 +65,4 @@
             write_invalid_drug($unregistered_drugs_json);
         }
     }
-<<<<<<< HEAD
 ?>
-=======
-?>
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca

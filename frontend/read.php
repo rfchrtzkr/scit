@@ -16,11 +16,7 @@
         $json_string= null;
         include('../backend/read.php');
         
-<<<<<<< HEAD
         if($member_exists && ($nfc_active || $input_from_qr))
-=======
-        if($member_exists && $nfc_active)
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
         {
             include_once('../backend/php_functions.php');
             ?>
@@ -70,19 +66,12 @@
             <?php
         } elseif($member_exists && !$nfc_active) {
             echo "inactive";
-<<<<<<< HEAD
         } elseif($member_exists && $input_from_qr) {
             echo "inactive";
         } else {
             echo "false";
-=======
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
         }
     } else {
         echo "false"; 
     }
-<<<<<<< HEAD
 ?>
-=======
-?>
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca

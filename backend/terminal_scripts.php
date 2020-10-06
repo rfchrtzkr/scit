@@ -1,26 +1,5 @@
 <?php
 
-<<<<<<< HEAD
-=======
-
-// invoked in BE/read_qr.php[4]
-function qr_read()
-{
-    $serial_location = "/var/www/html/qrscan";
-    $command = "sudo python3"; //$command = "sudo python";
-    $data = shell_exec("$command $serial_location/qrscan.py");
-    return $data;
-}
-
-// invoked in BE/read_nfc.php[4]
-function nfc_read()
-{
-    $serial_location = "/var/www/html/nfcread";
-    $command = "sudo python"; //$command = "sudo python";
-    $data = shell_exec("$command $serial_location/nfcread.py");
-    return $data;
-}
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
 
 // invoked in BE/read_qr.php[4]
 function qr_read()

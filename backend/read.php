@@ -18,17 +18,12 @@
         
         if($row_count == 1)
         {
-<<<<<<< HEAD
             if(isset($_SESSION['qr_data']) || !empty($_SESSION['qr_data'])){
                 $input_from_qr = true;
             } else {
                 $nfc_active = ($row['nfc_active'] == "1") ? true: false;
             }
             if($nfc_active || $input_from_qr){
-=======
-            $nfc_active = ($row['nfc_active'] == "1") ? true: false;
-            if($nfc_active){
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
                 $osca_id = $row['osca_id'];
                 $selected_id = $row['member_id'];
                 $first_name = $row['first_name'];
