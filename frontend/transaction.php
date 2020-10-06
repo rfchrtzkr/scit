@@ -28,7 +28,7 @@
         </div>
         <div class="trans-title user">
             <?php
-            if($business_type == "pharmacy"){            
+            if($business_type == "pharmacy"){
                 echo '<button class="btn-toggle" data-toggle="modal" data-target="#modal_history" style="position: absolute; right: 0;"><div id="label"><i class="fas fa-file-medical"></i></div></button>';
             }
             echo $_SESSION['sr_full_name']; ?>

@@ -47,7 +47,12 @@
             </div>
             <div class="foot">
                 <button type="button" class="btn btn-block btn-light btn-lg" id="trans_history">History</button>
-                <button type="button" class="btn btn-block btn-light btn-lg" id="new_trans">New Transaction</button>
+                <?php 
+                if($business_type != "pharmacy"){?>
+                    <button type="button" class="btn btn-block btn-light btn-lg" id="new_trans">New Transaction</button>
+                <?php
+                }
+                ?>
                 <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
             </div>
             
