@@ -85,16 +85,7 @@ function write_invalid_drug($data = "")
     $serial_location = "/var/www/html/rpiserial";
     $command = "python"; //$command = "sudo python";
     $json_file = fopen("$serial_location/serial_invalid_drug.json", "w") or die("Unable to open file!");
+    //$json_file = fopen("../script/serial_invalid_drug.json", "w") or die("Unable to open file!");
     fwrite($json_file, $data);
     fclose($json_file);
 }
-
-
-/*
-function write_invalid_dosage($data = "")
-{
-    $json_file = fopen("$serial_location/serial_invalid_dosage.json", "w") or die("Unable to open file!");
-    fwrite($json_file, $data);
-    fclose($json_file);
-}
-*/

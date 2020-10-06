@@ -20,6 +20,7 @@
         {
             include_once('../backend/php_functions.php');
             ?>
+            <script> console.log(<?php echo json_encode($_SESSION); ?>); </script>
             <div class="member-picture">
                 <img src="<?php echo $picture; ?>" class="avatar">
             </div>

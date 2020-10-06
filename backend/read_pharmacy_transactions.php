@@ -4,6 +4,7 @@
     *   compound_dosage_recent, max_basis_weekly, and max_basis_monthly
      */
     include('../backend/conn.php');
+    include_once('../backend/session.php');
     
     $mysqli_pharma_trans = new mysqli($host,$user,$pass,$schema) or die($mysqli_pharma_trans->error);
 

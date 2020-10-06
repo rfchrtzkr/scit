@@ -2,6 +2,8 @@
     include_once('../backend/conn.php');
     include_once('../backend/session.php');
     include_once('../backend/terminal_scripts.php');
+    $nfc_active = false;
+    $input_from_qr = false;
 
     if(isset($_POST['input_nfc'])){
         $input_nfc = $mysqli->real_escape_string($_POST['input_nfc']);
@@ -50,12 +52,9 @@
                 } else {
                     $picture = "../resources/images/unknown_m_f.png";
                 }
-<<<<<<< HEAD
                 $member_valid = true;
             } else {
                 $member_valid = false;
-=======
->>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
             }
             $member_exists = true;
         } else {

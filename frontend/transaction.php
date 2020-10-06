@@ -3,18 +3,19 @@
     
     ?>
     <script>
-        alert("called transaction.php");
+        //alert("called transaction.php");
     </script>
     <?php
     if(isset($_SESSION['osca_id'])) {
         ?>
         <script>
-            alert("OSCA_ID is set: <?php echo $_SESSION['osca_id']?>" );
+            //alert("OSCA_ID is set: <?php echo $_SESSION['osca_id']?>" );
         </script>
         <?php
         include_once('../backend/php_functions.php');
         include_once('../backend/terminal_scripts.php');
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
+        $counter = 0;
         $total_discount = 0;
         $total_amount_to_pay = 0;
         $trans_date = "";
@@ -26,63 +27,27 @@
             TRANSACTION
         </div>
         <div class="trans-title user">
-            <?php echo $_SESSION['sr_full_name']; ?>
+            <?php
+            if($business_type == "pharmacy"){            
+                echo '<button class="btn-toggle" data-toggle="modal" data-target="#modal_history" style="position: absolute; right: 0;"><div id="label"><i class="fas fa-file-medical"></i></div></button>';
+            }
+            echo $_SESSION['sr_full_name']; ?>
         </div>
+        
+        <?php
+        ?>
         <div class="transaction scrollbar-black" id="trans123">
             <?php
 
-            
-            // this will control the creation of unknown drugs.
-            if(isset($unregistered_drugs['drugs']) && (count($unregistered_drugs['drugs']) > 0)) {
-                ?>
-                <script>
-                    alert("Called create_drugs.php");
-                </script>
-                <?php
-                include("../backend/create_drugs.php");
-            }
-            
-            $counter = 0;
-
             include('../backend/new_transaction.php');
-            if(isset($_SESSION['transaction_from_pos']) || !empty($_SESSION['transaction_from_pos'])){
+            
+            if(isset($_SESSION['transaction_from_pos'])){
                 $_SESSION['transaction'] = json_decode(json_encode($transaction),true);
-                
                 ?>
                     <script> console.log(<?php echo json_encode($_SESSION); ?>); </script>
                 <?php
-                
                 // get total of ingredient dosage in this transaction
                 if($business_type == "pharmacy"){
-
-                    if(count($unregistered_drugs['drugs']) > 0){
-                        ?>
-                        <script>
-                        alert("displaying invalid_drugs in console");
-                        console.log(<?php echo json_encode($unregistered_drugs);?>);
-                        alert("DISPLAYED invalid_drugs in console");
-                        </script>
-                        <?php
-                        serial_invalid_drug();
-
-                        $_SESSION['unregistered_drugs'] = true;
-                        
-                        // PROGRESS REMAINING:
-                        // send $unregistered_drugs_json to POS using serial
-                        // the $unregistered_drugs_json will be converted to json and 
-                        // use the containing details to be the generic name, brand, dose&unit
-                        // the only editable text in POS will be the is_otc, max_wkly, & max_monthly
-                        // if the SCIT receives the $_POST['unregisted_drugs'],
-                        // load the transaction.php  to the #body
-
-                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // PHARMACIST OVERRIDE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    } else {
-                        unset($_SESSION['unregistered_drugs']);
-                    }
-
                     $compound_dosage_transaction = [];
                     $max_basis_weekly = [];
                     $max_basis_monthly = [];
@@ -266,7 +231,7 @@
                 echo "<div class='eol'>Transaction has not been set</div>";
                 $flagged = true;
             }
-            var_dump($transaction_from_pos);
+            //var_dump($transaction_from_pos);
             ?>
         </div>
         <div class="transaction-summary">
@@ -331,7 +296,16 @@
                 </div>
                 <?php
                 
-                if(!isset($_SESSION['unregistered_drugs']) || !$_SESSION['unregistered_drugs']) {
+                if($_SESSION['invalid_drug'] == true) {
+                    ?>
+                    <script>
+                    //alert("DISPLAYING invalid_drugs in console");
+                    console.log(<?php echo json_encode($unregistered_drugs);?>);
+                    //alert("DISPLAYED invalid_drugs in console");
+                    </script>
+                    <?php
+                    serial_invalid_drug();
+                } else {
                     serial_invalid_dosage();
                 }
             } else {
@@ -341,9 +315,35 @@
             
         <div class="foot">
             <button type="button" class="btn btn-block btn-light btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
-                <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
+            <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
         </div>
+        <!-- Trigger the modal with a button -->
+
+        <!-- Modal -->
+        <div id="modal_history" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <?php 
+                        $history_modal = true;
+                        include("../frontend/transaction_history_modal.php");
+                        ?>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
         <script>
+            var msg_modal = document.getElementById("msg_modal");
+            
             function CreateTransaction(message) {
                 $('<div></div>').appendTo('body')
                     .html('<div><h6>' + message + '?</h6></div>')
@@ -383,21 +383,21 @@
                 });
                 
                 $("body").on('click', "#new_trans_2", function () {
-                    modal.style.display = "none";
-                    $('#response').load("../backend/read_serial.php", function(read_serial_response){
-                        //alert(read_serial_response);
-                        if(read_serial_response.trim() != "false"){
+                    msg_modal.style.display = "none";
+                    $('#response').load("../backend/create_drugs.php", function(create_drug_response){
+                        //alert(create_drug_response);
+                        if(create_drug_response.trim() == "true"){
+                            //alert("ui pumasok create_drugs.php");
                             $('#body').load("../frontend/transaction.php", function(d){
                                 if(d.trim() == "false"){
                                     MsgBox_Invalid("Data received is invalid!", "Invalid Serial Read");
                                 }
                             });
                         } else {
-                            MsgBox_Invalid("No transaction received!", "Invalid Serial Read");
+                            MsgBox_Invalid("No transaction 2received 32!<?php echo $_SESSION['branch']?>", "Invalid Serial Read");
                         }
                     });
                 });
-
             });
             console.log("Session vars after encode:");
             console.log(<?php echo json_encode($_SESSION); ?>);

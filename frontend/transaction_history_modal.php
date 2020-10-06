@@ -12,7 +12,7 @@
 
         if($business_type == "pharmacy"){
             
-            $show_drugs_button = '<button class="btn-toggle" id="show_only_drugs"><div id="label"><i class="fas fa-shopping-cart"></i> + <i class="fas fa-capsules"></i></div></button>';
+            $show_drugs_button = '<button class="btn-toggle" id="show_only_drugs"><div id="label"><i class="fas fa-capsules"></i></div></button>';
             $transaction_query = "SELECT `member_id`, `trans_date`, date(trans_date) `ddd`, `clerk`, `company_name` `company`, `branch`, `business_type`, `company_tin`,
                                     `desc_nondrug`, `generic_name`, `brand`, `dose`, `is_otc`, `max_monthly`, `max_weekly`, `unit`, `quantity`,
                                     `vat_exempt_price`, `discount_price`, `payable_price`
@@ -41,9 +41,9 @@
         ?>
             <div class="trans-title">
                 TRANSACTIONS HISTORY
+                <?php  echo $show_drugs_button; ?>
             </div>
-            <?php  echo $show_drugs_button; ?>
-            <div class="transaction-history scrollbar-black">
+            <div class="transaction-history-modal transaction-history scrollbar-black">
         <?php
         
         if($row_count != 0)
@@ -94,23 +94,26 @@
                             $maxed = "";
                         }
                         ?>
-                        <div class="row _transaction-record collapse-header drug <?php echo "$recent $maxed";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                        <div class="row _transaction-record collapse-header drug <?php echo "$recent $maxed";?>" data-toggle="collapse" data-target="#collapse_history<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_history<?php echo $counter?>">
                             <div class="col col-12 d-md-block">
-                                <b><?php echo "$company - $branch"?></b>
+                                <b><?php echo "$company"?></b>
                             </div>
                             <div class="col col-12">
-                                <?php echo "$transaction_date <i>(By:  $clerk)</i>"?>
+                                <?php echo "$transaction_date"?>
                             </div>
                             <div class="col col-12">
-                                <?php echo "[ $generic_name_string ] <br>"?>
+                                <?php echo "[$generic_name_string] <br>"?>
                             </div>
                             <div class="col col-12">
-                                <b><?php echo "$brand "."$dose"."$unit @ $quantity"."pcs"?></b>
+                                <b><?php echo "$brand @ $quantity"."pcs"?></b>
+                            </div>
+                            <div class="col col-12">
+                                <b><?php echo "$dose"."$unit"?></b>
                             </div>
                         <?php
                     } else {
                         ?>
-                        <div class="row _transaction-record collapse-header non-drug <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                        <div class="row _transaction-record collapse-header non-drug <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_history<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_history<?php echo $counter?>">
                             <div class="col col-12 d-md-block">
                                 <b><?php echo "$company - $branch" ?></b>
                             </div>
@@ -127,7 +130,7 @@
                 if($business_type == "food" || $business_type == "transportation" ){
                     $desc = $row['desc'];
                     ?>
-                    <div class="row _transaction-record collapse-header <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_<?php echo $counter?>">
+                    <div class="row _transaction-record collapse-header <?php echo "$recent";?>" data-toggle="collapse" data-target="#collapse_history<?php echo $counter?>" aria-expanded="false" aria-controls="collapse_history<?php echo $counter?>">
                         <div class="col col-12 d-md-block">
                             <b><?php echo "$company - $branch" ?></b>
                         </div>
@@ -143,7 +146,7 @@
                     <?php
                 }
                 ?>
-                    <div id="collapse_<?php echo $counter?>" class="col collapse" aria-labelledby="heading<?php echo $counter?>">
+                    <div id="collapse_history<?php echo $counter?>" class="col collapse" aria-labelledby="heading<?php echo $counter?>">
                         <div class="row pl-3">
                             <div class="col col-6">
                                 VAT Exempt Price
@@ -177,27 +180,15 @@
         }
         mysqli_close($mysqli);
         ?>
-            </div>
-        <div class="foot">
-            <?php
-            if(isset($history_modal)){
-                ?>
-                <button type="button" class="btn btn-block btn-exit btn-lg" id="close_history_modal">Closex</button>
-                <?php
-            } else {
-                echo '
-                <button type="button" class="btn btn-block btn-light btn-lg" id="new_trans">New Transaction</button>
-                <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
-                ';
-            }
-            ?>
         </div>
             
         <script>
         var business_type = '<?php echo $business_type;?>';
+        
+        $(".non-drug").toggle(50, "linear");
 
         $(document).ready(function(){
-            var toggle_on = true;
+            var toggle_on = false;
 
             $("#show_only_drugs").click(function(){
                 $(".non-drug").toggle(50, "linear");

@@ -9,5 +9,4 @@
     unset($_SESSION['nfc_data']);
     unset($_SESSION['qr_data']);
     unset($_SESSION['transaction_from_pos']);
-
-    
+    unset($_SESSION['transaction']);
