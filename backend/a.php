@@ -8,6 +8,14 @@
 
 <div>
 <?php
+
+
+
+
+$a = true;
+$b = false;
+if($a) { echo "hello1<br>";}
+if($b == "true") { echo "hello2<br>";}
     include('../backend/session.php');
     include('../backend/conn_osca.php');
     

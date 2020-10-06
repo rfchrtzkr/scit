@@ -1,30 +1,70 @@
 <?php
     include('../backend/session.php');
     
+    ?>
+    <script>
+        alert("called transaction.php");
+    </script>
+    <?php
     if(isset($_SESSION['osca_id'])) {
+        ?>
+        <script>
+            alert("OSCA_ID is set: <?php echo $_SESSION['osca_id']?>" );
+        </script>
+        <?php
         include_once('../backend/php_functions.php');
         include_once('../backend/terminal_scripts.php');
-    
+<<<<<<< HEAD
+=======
+            ?>
+            <script>
+                console.log(<?php echo json_decode($_SESSION['transaction_from_pos'], true)?>);
+                alert("Transaction has been read (see console");
+                //alert("Serial has been read: < ?php var_dump($_SESSION['transaction_from_pos']);?>" );
+            </script>
+            <?php
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
         $formatter = new NumberFormatter("fil-PH", \NumberFormatter::CURRENCY);
         $total_discount = 0;
         $total_amount_to_pay = 0;
-        $transaction_date = "";
+        $trans_date = "";
         $clerk = "";
         $flagged_items = [];
         $business_type = $_SESSION['business_type'];
         ?>
-        <div class="title">
+        <div class="trans-title">
             TRANSACTION
         </div>
-        <div class="title user">
+        <div class="trans-title user">
             <?php echo $_SESSION['sr_full_name']; ?>
         </div>
         <div class="transaction scrollbar-black" id="trans123">
             <?php
-            {
-                $counter = 0;
-                include('../backend/new_transaction.php');
+<<<<<<< HEAD
+
+            
+            // this will control the creation of unknown drugs.
+            if(isset($unregistered_drugs['drugs']) && (count($unregistered_drugs['drugs']) > 0)) {
+                ?>
+                <script>
+                    alert("Called create_drugs.php");
+                </script>
+                <?php
+                include("../backend/create_drugs.php");
+            }
+            
+            $counter = 0;
+
+            include('../backend/new_transaction.php');
+            if(isset($_SESSION['transaction_from_pos']) || !empty($_SESSION['transaction_from_pos'])){
+                $_SESSION['transaction'] = json_decode(json_encode($transaction),true);
+=======
+            
+            $counter = 0;
+            include('../backend/new_transaction.php');
+            if(isset($_SESSION['transaction_from_pos '])){
                 $_SESSION['transaction'] = $transaction;
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
                 
                 ?>
                     <script> console.log(<?php echo json_encode($_SESSION); ?>); </script>
@@ -33,7 +73,14 @@
                 // get total of ingredient dosage in this transaction
                 if($business_type == "pharmacy"){
 
-                    if(count($unregistered_drugs) > 0){
+                    if(count($unregistered_drugs['drugs']) > 0){
+                        ?>
+                        <script>
+                        alert("displaying invalid_drugs in console");
+                        console.log(<?php echo json_encode($unregistered_drugs);?>);
+                        alert("DISPLAYED invalid_drugs in console");
+                        </script>
+                        <?php
                         serial_invalid_drug();
 
                         $_SESSION['unregistered_drugs'] = true;
@@ -94,7 +141,7 @@
                     }
                 }
 
-                // Populate transactions list from $transactions array
+                // Populate displayed Transactions list from $transactions array
                 foreach($transaction['items'] as $row => $item){
                     $counter++;
                     $vat_exempt_price = $formatter->format($item['vat_exempt_price']);
@@ -233,7 +280,11 @@
                         <?php
                     }
                 }
+            } else {
+                echo "<div class='eol'>Transaction has not been set</div>";
+                $flagged = true;
             }
+            var_dump($transaction_from_pos);
             ?>
         </div>
         <div class="transaction-summary">
@@ -266,16 +317,20 @@
                 </div>
             </div>
         </div>
+<<<<<<< HEAD
+        <?php
+=======
         <?php 
             // this will control the creation of unknown drugs.
             if(isset($_SESSION['unregistered_drugs']) && $_SESSION['unregistered_drugs']) {
-                include("../backend/create_drugs.php");
                 ?>
                 <script>
-                    alert("The invalid drugs will be sent to the POS, the ACCEPT button will be inactive.\r\n Then the SCIT will display trans details while waiting for POS\r\n to send the [transaction details] + [new drug details]. \r\n Only then the ACCEPT TRANSACTION button will be active.");
+                    alert("The invalid drugs has been sent to the POS, the ACCEPT button will be inactive.\r\n Then the SCIT will display trans details while waiting for POS\r\n to send the [transaction details] + [new drug details]. \r\n Only then the ACCEPT TRANSACTION button will be active.");
                 </script>
                 <?php
+                include("../backend/create_drugs.php");
             }
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
             if(count($flagged_items) > 0) {
                 $flagged = true;
                 $counter = 0;
@@ -299,6 +354,7 @@
                                     }
                                 ?>
                             </ul>
+                            <button class="btn btn-lg btn-dark btn-block" id="new_trans_2">OK</button>
                         </div>
                         <div class="modal-footer">
                         </div>
@@ -309,38 +365,38 @@
                 if(!isset($_SESSION['unregistered_drugs']) || !$_SESSION['unregistered_drugs']) {
                     serial_invalid_dosage();
                 }
-                serial_read();
             } else {
                 $flagged = false;
                 
             } ?>
             
         <div class="foot">
-            <button type="button" class="btn btn-block btn-success btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
-        </div>
-        <div class="foot">
-            <button type="button" class="btn btn-block btn-light btn-lg" id="return">Return</button>
+            <button type="button" class="btn btn-block btn-light btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
+                <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
         </div>
         <script>
+<<<<<<< HEAD
+=======
             var modal = document.getElementById("msg_modal");
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
                 }
-            } 
+            }
 
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
             function CreateTransaction(message) {
                 $('<div></div>').appendTo('body')
                     .html('<div><h6>' + message + '?</h6></div>')
                     .dialog({
                         modal: true,
-                        title: 'Delete message',
+                        title: 'Accept Transaction',
                         zIndex: 10000,
                         autoOpen: true,
                         width: 'auto',
                         resizable: false,
                         buttons: {
-                            Yes: function() {
+                            Accept: function() {
                                 var trans = JSON.stringify(<?php echo json_encode($transaction); ?>);
                                 $.post("../backend/create_transaction.php", { accepted: true, transaction: trans}, function(d){
                                     if(d="true") {
@@ -352,9 +408,8 @@
                                 });
                                 $(this).dialog("close");
                             },
-                            No: function() {
-                                $('#body').load("../frontend/home.php #home");
-                                $(this).dialog("close");
+                            Cancel: function() {
+                                $(this).remove();
                             }
                         },
                         close: function(event, ui) {
@@ -364,13 +419,29 @@
             };
 
             $(document).ready(function(){
-                $("#return").click(function(){
-                    $('#body').load("../frontend/home.php #home");
+                $("#accept").click(function(){
+                    CreateTransaction('Are transaction details correct?');
+<<<<<<< HEAD
                 });
                 
-                $("#accept").click(function(){
-                    CreateTransaction('Are you sure');
+                $("body").on('click', "#new_trans_2", function () {
+                    modal.style.display = "none";
+                    $('#response').load("../backend/read_serial.php", function(read_serial_response){
+                        //alert(read_serial_response);
+                        if(read_serial_response.trim() != "false"){
+                            $('#body').load("../frontend/transaction.php", function(d){
+                                if(d.trim() == "false"){
+                                    MsgBox_Invalid("Data received is invalid!", "Invalid Serial Read");
+                                }
+                            });
+                        } else {
+                            MsgBox_Invalid("No transaction received!", "Invalid Serial Read");
+                        }
+                    });
+=======
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
                 });
+
             });
             console.log("Session vars after encode:");
             console.log(<?php echo json_encode($_SESSION); ?>);

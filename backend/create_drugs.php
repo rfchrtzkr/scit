@@ -1,5 +1,6 @@
 <?php
     include_once("../backend/php_functions.php");
+    include_once("../backend/terminal_scripts.php");
 
     // CODE BLOCK BELOW: simulation only
     {
@@ -11,12 +12,20 @@
             $unregistered_drugs_1[] = $drug;
         }
     }
-
     // read from serial
     // Uncomment below if for use in raspi
     //$unregistered_drugs_1 = read_from_serial_createDrug($business_type);
-    $json_string = shell_exec("python serialread.py");
+    ?>
+        <script>
+            alert("Entered create_drug.php");
+        </script>
+    <?php
 
+<<<<<<< HEAD
+    $json_string = serial_read_nowait();
+=======
+    $json_string = serial_read();
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
 
     $drugs_json_object = json_decode($json_string);
     $invalid_inputs = array();

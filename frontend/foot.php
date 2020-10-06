@@ -1,7 +1,8 @@
-        
+        <?php include_once("../backend/session.php"); ?>
                 <div id="qr_content"></div>
             </div>
         </div>
+        <div id="response"></div>
     </body>
 </html>
 
@@ -12,35 +13,189 @@
     }
     
     $(document).ready(function(){
+        $("body").on('click', "#exit", function () {
+            reload_home();
+        });
+<<<<<<< HEAD
+        
+=======
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
+        $("body").on('click', "#new_trans", function () {
+            $('#response').load("../backend/read_serial.php", function(read_serial_response){
+                //alert(read_serial_response);
+                if(read_serial_response.trim() != "false"){
+                    $('#body').load("../frontend/transaction.php", function(d){
+                        if(d.trim() == "false"){
+                            reload_home();
+                        }
+                    });
+                } else {
+                    alert("No transaction received");
+                }
+            });
+        });
+        
+        $("body").on('click', "#nfc_read", function () {
+            $('#response').load("../backend/read_nfc.php", function(read_nfc_response){
+<<<<<<< HEAD
+                //alert(read_nfc_response);
+                if(read_nfc_response.trim() != "false"){
+                    $('#body').load("../frontend/read.php", { input_nfc: read_nfc_response.trim()}, function(d){
+                        //alert(d);
+=======
+                alert(read_nfc_response);
+                if(read_nfc_response.trim() != "false"){
+                    $('#body').load("../frontend/read.php", { input_nfc: read_nfc_response.trim()}, function(d){
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
+                        if(d.trim() == "false"){
+                            $('#body').load("../frontend/home.php #home");
+                        } else if (d.trim() == "inactive"){
+                            MsgBox_Invalid("Member's tag is inactive!", "Invalid INFC");
+                            $('#body').load("../frontend/home.php #home");
+                        }
+                        //setTimeout(function() { reload_home(); }, idle_interval);
+                    });
+                }
+            });
+        });
+        
+        $("body").on('click', "#qr_read", function () {
+            $('#response').load("../backend/read_qr.php", function(read_qr_response){
+<<<<<<< HEAD
+=======
+                alert(read_qr_response);
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
+                if(read_qr_response.trim() != "false"){
+                    $('#qr_content').load("../frontend/read_qr.php", { qr_code: read_qr_response.trim()}, function(d){
+                        if(d.trim() == "invalid"){
+                            MsgBox_Invalid("The QR does not exist.", "Invalid QR Code");
+                            $('#body').load("../frontend/home.php #home");
+                        } else if(d.trim() == "expired"){
+<<<<<<< HEAD
+                            MsgBox_Invalid("This request has already expired. Please request a new QR code.", "QR Code Expired");
+                            $('#body').load("../frontend/home.php #home");
+                        } else if (d.trim() == "used"){
+                            MsgBox_Invalid("This request has already been used.", "QR Code Used");
+                            $('#body').load("../frontend/home.php #home");
+                        }/* else {
+                            MsgBox_Invalid("There is something wrong with your request.", "QR Code Invalid");
+                            $('#body').load("../frontend/home.php #home");
+                        }*/
+=======
+                            MsgBox_Invalid("The request has already been expired. Please request a new QR code.", "QR Code Expired");
+                            $('#body').load("../frontend/home.php #home");
+                        } else if (d.trim() == "used"){
+                            MsgBox_Invalid("The request has already been used.", "QR Code Used");
+                            $('#body').load("../frontend/home.php #home");
+                        } else {
+                            MsgBox_Invalid("There is something wrong with your request.", "QR Code Invalid");
+                            $('#body').load("../frontend/home.php #home");
+                        }
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
+                    });
+                }
+            });
+        });
+
+
+
+
+
         $("#read").click(function(){
             var input_nfc = $("#nfc_id").val();
             $('#body').load("../frontend/read.php", { input_nfc: input_nfc}, function(d){
-                if(d == "false"){
+                if(d.trim() == "false"){
+                    $('#body').load("../frontend/home.php #home");
+                } else if (d.trim() == "inactive"){
+                    MsgBox_Invalid("Member's tag is inactive!", "Invalid INFC");
                     $('#body').load("../frontend/home.php #home");
                 }
                 //setTimeout(function() { reload_home(); }, idle_interval);
             });
         });
+
+        /*
+        $("#sendtoJSON").click(function(){
+            < ?php $myJSON = json_encode($_SESSION); ?>
+            console.log(< ?php echo $myJSON; ?>);
+        });
+        */
+
         $("#read_qr").click(function(){
             var input_nfc = $("#nfc_id").val();
             $('#qr_content').load("../frontend/read_qr.php", { qr_code: input_nfc}, function(d){
-                /*
-                if(d == "false"){
+                if(d.trim() == "invalid"){
+                    MsgBox_Invalid("The QR does not exist.", "Invalid QR Code");
+                    $('#body').load("../frontend/home.php #home");
+                } else if(d.trim() == "expired"){
+<<<<<<< HEAD
+                    MsgBox_Invalid("This request has already expired. Please request a new QR code.", "QR Code Expired");
+                    $('#body').load("../frontend/home.php #home");
+                } else if (d.trim() == "used"){
+                    MsgBox_Invalid("This request has already been used.", "QR Code Used");
+                    $('#body').load("../frontend/home.php #home");
+                } /*else {
+                    MsgBox_Invalid("There is something wrong with your request.", "QR Code Invalid");
                     $('#body').load("../frontend/home.php #home");
                 }*/
-                //setTimeout(function() { modal.style.display = "none"; }, idle_interval);
+=======
+                    MsgBox_Invalid("The request has already been expired. Please request a new QR code.", "QR Code Expired");
+                    $('#body').load("../frontend/home.php #home");
+                } else if (d.trim() == "used"){
+                    MsgBox_Invalid("The request has already been used.", "QR Code Used");
+                    $('#body').load("../frontend/home.php #home");
+                } else {
+                    MsgBox_Invalid("There is something wrong with your request.", "QR Code Invalid");
+                    $('#body').load("../frontend/home.php #home");
+                }
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
             });
         });
+
         $("#transaction").click(function(){
-            var input_nfc = $("#nfc_id").val();
-            var business_type = $("#bustype").val();
             $('#body').load("../frontend/transaction.php", function(d){
-                if(d == "false"){
+                if(d.trim() == "false"){
                     $('#body').load("../frontend/home.php #home");
                 }
             });
         });
+
+        $("#serial_read").click(function(){
+            $('#response').load("../backend/read_serial.php", function(read_serial_response){
+                alert(read_serial_response);
+                if(read_serial_response.trim() != "false"){
+                    $('#body').load("../frontend/transaction.php", function(d){
+                        if(d.trim() == "false"){
+                            $('#body').load("../frontend/home.php #home");
+                        }
+                    });
+                }
+            });
+        });
+        
     });
+    function MsgBox_Invalid(message, title) {
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>' + message + '</h6></div>')
+            .dialog({
+                modal: true,
+                title: title,
+                zIndex: 10000,
+                autoOpen: true,
+                width: '300px',
+                resizable: false,
+                buttons: {
+                    OK: function() {
+                        reload_home();
+                        $(this).remove();
+                    }
+                },
+                close: function(event, ui) {
+                    reload_home();
+                    $(this).remove();
+                }
+            });
+    };
 </script>
 
     

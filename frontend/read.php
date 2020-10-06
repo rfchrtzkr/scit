@@ -16,94 +16,73 @@
         $json_string= null;
         include('../backend/read.php');
         
-        if($member_exists)
+<<<<<<< HEAD
+        if($member_exists && ($nfc_active || $input_from_qr))
+=======
+        if($member_exists && $nfc_active)
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
         {
             include_once('../backend/php_functions.php');
             ?>
-             <!-- TEMPORARY!!! -->
-                <?php $myJSON = json_encode($_SESSION); ?>
-                <script> console.log(<?php echo $myJSON; ?>); </script>
-             <!-- TEMPORARY!!! -->
             <div class="member-picture">
                 <img src="<?php echo $picture; ?>" class="avatar">
             </div>
-            <div class="member-details">
-                <div class="row">
-                    <div class="col col-md-12">
-                        <?php echo $last_name;?>,
-                        <?php echo $first_name;?> 
-                        <?php echo $middle_name;?>
-                    </div>
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        (Lastname, Firstname, Middlename)
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-12">
-                        <?php echo $bdate;?>
-                    </div>
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Birthdate
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-12">
-                        <?php echo determine_sex($sex2, "display_long"); ?>
-                    </div>
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Gender
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-12">
-                        <?php echo $contact_number;?>
-                    </div>
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        Contact Number
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col col-md-12">
-                    </div>
-                    <div class="col col-md-12 d-none d-md-block _label">
-                        City
-                    </div>
-                </div>
-
+            
+            <div>
+                <ul class="member-details">
+                    <li class="profile-item">
+                        <div class="content"><?php echo $fullname; ?></div>
+                        <div class="subtitle">Fullname</div> 
+                    </li>
+                    <li class="profile-item">
+                        <div class="content"><?php echo determine_sex($sex2, "display_long"); ?></div>
+                        <div class="subtitle">Sex</div> 
+                    </li>
+                    <li class="profile-item">
+                        <div class="content"><?php echo $bdate; ?></div>
+                        <div class="subtitle">Birthdate</div> 
+                    </li>   
+                    <li class='profile-item'>
+                        <div class="content"><?php echo "$city, $province";?></div>
+                        <div class="subtitle">Address</div>
+                    </li>
+                </ul>
             </div>
             <div class="foot">
-                <button type="button" class="btn btn-block btn-light btn-lg" id="trans_history">Transactions History</button>
+                <button type="button" class="btn btn-block btn-light btn-lg" id="trans_history">History</button>
+                <button type="button" class="btn btn-block btn-light btn-lg" id="new_trans">New Transaction</button>
+                <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
             </div>
             
             <script>
-                $(document).ready(function(){
-                    $("#trans_history").click(function(){
-                        var osca_id = "<?php echo $osca_id;?>";
-                        $.post("../frontend/transaction_history.php", {osca_id: osca_id }, function(d){
-                            if(d != "false"){
-                                $('#body').load("../frontend/transaction_history.php", { osca_id: osca_id });
-                            } else {
-                                $('#body').load("../frontend/home.php #home");
-                            }
-                        });
+
+            $(document).ready(function(){
+                $("body").on('click', "#trans_history", function () {
+                    var osca_id = "<?php echo $osca_id;?>";
+                    $('#body').load("../frontend/transaction_history.php", {osca_id: osca_id }, function(d){
+                        if(d.trim() == "false"){
+                            reload_home();
+                        }
                     });
                 });
+            });
             </script>
             <?php
-            if($business_type != "pharmacy"){
-                $_SESSION['transaction_from_pos'] = serial_read();
-                header("Location: ../frontend/transaction.php"); // Redirecting To Home Page
-            }
+        } elseif($member_exists && !$nfc_active) {
+            echo "inactive";
+<<<<<<< HEAD
+        } elseif($member_exists && $input_from_qr) {
+            echo "inactive";
         } else {
             echo "false";
+=======
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
         }
     } else {
         echo "false"; 
     }
+<<<<<<< HEAD
 ?>
-
-<script>
-    var json = "<?php echo $json_string; ?>";
-    console.log(json);
-
-</script>
+=======
+?>
+>>>>>>> a9f5761bc5f1e8c543307371c7ece297b3e06aca
