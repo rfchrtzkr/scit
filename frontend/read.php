@@ -47,6 +47,7 @@
             </div>
             <div class="foot">
                 <button type="button" class="btn btn-block btn-light btn-lg" id="trans_history">History</button>
+                <button type="button" class="btn btn-block btn-light btn-lg" data-toggle="modal" data-target="#modal_guardians">Guardians</button>
                 <?php 
                 if($business_type != "pharmacy"){?>
                     <button type="button" class="btn btn-block btn-light btn-lg" id="new_trans">New Transaction</button>
@@ -54,6 +55,28 @@
                 }
                 ?>
                 <button type="button" class="btn btn-block btn-exit btn-lg" id="exit">Exit</button>
+            </div>
+            
+            <!-- Modal -->
+            <div id="modal_guardians" class="modal" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <?php 
+                            $history_modal = true;
+                            include("../frontend/guardians.php");
+                            ?>
+                        </div>
+                        <div class="modal-footer">
+                        </div>
+                    </div>
+
+                </div>
             </div>
             
             <script>
@@ -67,9 +90,22 @@
                         }
                     });
                 });
+                $("body").on('click', "#guardians", function () {
+                    var osca_id = "<?php echo $osca_id;?>";
+                    $('#body').load("../frontend/guardians.php", {osca_id: osca_id }, function(d){
+                        if(d.trim() == "false"){
+                            reload_home();
+                        }
+                    });
+                });
             });
             </script>
             <?php
+            if(isset($_GET['cardless'])){
+                ?>
+                <script>$("#modal_guardians").modal('show');</script>
+                <?php
+            }
         } elseif($member_exists && !$nfc_active) {
             echo "inactive";
         } elseif($member_exists && $input_from_qr) {

@@ -18,7 +18,7 @@
         });
         
         $("body").on('click', "#new_trans", function () {
-            $('#response').load("../backend/read_serial.php", function(read_serial_response){
+            $.post("../backend/read_serial.php", function(read_serial_response){
                 //alert(read_serial_response);
                 if(read_serial_response.trim() != "false"){
                     $('#body').load("../frontend/transaction.php", function(d){
@@ -33,7 +33,7 @@
         });
         
         $("body").on('click', "#nfc_read", function () {
-            $('#response').load("../backend/read_nfc.php", function(read_nfc_response){
+            $.post("../backend/read_nfc.php", function(read_nfc_response){
                 //alert(read_nfc_response);
                 if(read_nfc_response.trim() != "false"){
                     $('#body').load("../frontend/read.php", { input_nfc: read_nfc_response.trim()}, function(d){
@@ -51,7 +51,7 @@
         });
         
         $("body").on('click', "#qr_read", function () {
-            $('#response').load("../backend/read_qr.php", function(read_qr_response){
+            $.post("../backend/read_qr.php", function(read_qr_response){
                 if(read_qr_response.trim() != "false"){
                     $('#qr_content').load("../frontend/read_qr.php", { qr_code: read_qr_response.trim()}, function(d){
                         if(d.trim() == "invalid"){
@@ -68,6 +68,33 @@
                             $('#body').load("../frontend/home.php #home");
                         }*/
                     });
+                }
+            });
+        });
+        
+        $("body").on('click', "#cardless", function () {
+            $.post("../backend/read_cardless.php", function(cardless_response){
+                alert(cardless_response);
+                cardless = cardless_response.trim();
+                if(cardless == "no_received"){
+                    MsgBox_Invalid("No data received from POS!", "No data received");
+                    $('#body').load("../frontend/home.php #home");
+                } else if(cardless == "invalid_details"){
+                    MsgBox_Invalid("Senior Citizen's data does not have a match in our record!", "No data fouund");
+                    $('#body').load("../frontend/home.php #home");
+                } else if(cardless != "invalid_details"){
+                    $('#body').load("../frontend/read.php?cardless=true", { input_nfc: cardless}, function(d){
+                        //alert(d);
+                        if(d.trim() == "false"){
+                            $('#body').load("../frontend/home.php #home");
+                        } else if (d.trim() == "inactive"){
+                            MsgBox_Invalid("Member's tag is inactive!", "Invalid INFC");
+                            $('#body').load("../frontend/home.php #home");
+                        }
+                        //setTimeout(function() { reload_home(); }, idle_interval);
+                    });
+                } else {
+                    MsgBox_Invalid("invalid!", "Invalid INFC");
                 }
             });
         });

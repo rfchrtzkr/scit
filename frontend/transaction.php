@@ -41,7 +41,7 @@
 
             include('../backend/new_transaction.php');
             
-            if(isset($_SESSION['transaction_from_pos'])){
+            if(isset($_SESSION['serial_received'])){
                 $_SESSION['transaction'] = json_decode(json_encode($transaction),true);
                 ?>
                     <script> console.log(<?php echo json_encode($_SESSION); ?>); </script>
@@ -231,7 +231,7 @@
                 echo "<div class='eol'>Transaction has not been set</div>";
                 $flagged = true;
             }
-            //var_dump($transaction_from_pos);
+            //var_dump($serial_received);
             ?>
         </div>
         <div class="transaction-summary">
@@ -254,64 +254,79 @@
                 </div>
                 <div class="row">
                     <div class="col col-12">
-                        <?php echo $trans_date ?>
+                        <?php echo "$trans_date "; echo ($transaction["clerk_override"])? "<span class='override_active'>Override enabled</span>":"";?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col col-12">
-                        Cashier: <?php echo $clerk ?>
+                        Cashier: <?php echo "$clerk ";?>
                     </div>
                 </div>
             </div>
         </div>
         <?php
-            if(count($flagged_items) > 0) {
-                $flagged = true;
-                $counter = 0;
-                ?>
-                <div id="msg_modal" class="modal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        </div>
-                        <div class="modal-body">
-                            <p>Some items are invalid:</p>
-                            <ul class="invalid-list scrollbar-black">
-                                <?php
-                                    foreach($flagged_items as $row => $item){
-                                        $counter++;
-                                        $brand = ucwords($item['brand']);
-                                        $generic_name = ucwords($item['generic_name']);
-                                        $dose = $item['dose'];
-                                        $unit = $item['unit'];
-                                        $quantity = $item['quantity'];
-                                        echo "<li>Item #$counter: $brand [ $generic_name ] $dose"."$unit @ $quantity pcs</li>";
-                                    }
-                                ?>
-                            </ul>
-                            <button class="btn btn-lg btn-dark btn-block" id="new_trans_2">OK</button>
-                        </div>
-                        <div class="modal-footer">
-                        </div>
-                    </div> 
-                </div>
-                <?php
-                
-                if($_SESSION['invalid_drug'] == true) {
+            if(count($flagged_items) > 0){
+                if($transaction['clerk_override'] != true) {
+                    $flagged = true;
+                    $counter = 0;
                     ?>
+                    
                     <script>
-                    //alert("DISPLAYING invalid_drugs in console");
-                    console.log(<?php echo json_encode($unregistered_drugs);?>);
-                    //alert("DISPLAYED invalid_drugs in console");
+                        $(document).ready(function(){
+                            $("#msg_modal").modal('show');
+                        });
                     </script>
+                    <div id="msg_modal" class="modal" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                </div>
+                                <div class="modal-body">
+                                    <p>Some items are invalid:</p>
+                                    <ul class="invalid-list scrollbar-black">
+                                        <?php
+                                        echo "[".count($flagged_items)."]";
+                                        echo "[".$transaction['clerk_override']."]";
+                                            foreach($flagged_items as $row => $item){
+                                                $counter++;
+                                                $brand = ucwords($item['brand']);
+                                                $generic_name = ucwords($item['generic_name']);
+                                                $dose = $item['dose'];
+                                                $unit = $item['unit'];
+                                                $quantity = $item['quantity'];
+                                                echo "<li>Item #$counter: $brand [ $generic_name ] $dose"."$unit @ $quantity pcs</li>";
+                                            }
+                                        ?>
+                                    </ul>
+                                    <button class="btn btn-lg btn-dark btn-block" id="new_trans_2">OK</button>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
                     <?php
-                    serial_invalid_drug();
+                    
+                    if($_SESSION['invalid_drug'] == true) {
+                        ?>
+                        <script>
+                        //alert("DISPLAYING invalid_drugs in console");
+                        console.log(<?php echo json_encode($unregistered_drugs);?>);
+                        //alert("DISPLAYED invalid_drugs in console");
+                        </script>
+                        <?php
+                        serial_invalid_drug();
+                    } else {
+                        serial_invalid_dosage();
+                    }
                 } else {
-                    serial_invalid_dosage();
+                    $flagged = false;
                 }
             } else {
                 $flagged = false;
-                
-            } ?>
+            }
+            
+            ?>
             
         <div class="foot">
             <button type="button" class="btn btn-block btn-light btn-lg" id="accept" <?php echo ($flagged)? "disabled": "";?>>Accept</button>
@@ -320,10 +335,10 @@
         <!-- Trigger the modal with a button -->
 
         <!-- Modal -->
-        <div id="modal_history" class="modal fade" role="dialog">
+        <div id="modal_history" class="modal" role="dialog">
             <div class="modal-dialog">
 
-                <!-- Modal content-->
+                <!-- Modal content -->
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -382,10 +397,11 @@
                     CreateTransaction('Are transaction details correct?');
                 });
                 
-                $("body").on('click', "#new_trans_2", function () {
-                    msg_modal.style.display = "none";
+                $("#new_trans_2").click(function () {
+                    $("#msg_modal").modal('hide');
                     $('#response').load("../backend/create_drugs.php", function(create_drug_response){
                         //alert(create_drug_response);
+                        alert(create_drug_response.trim());
                         if(create_drug_response.trim() == "true"){
                             //alert("ui pumasok create_drugs.php");
                             $('#body').load("../frontend/transaction.php", function(d){
@@ -394,7 +410,7 @@
                                 }
                             });
                         } else {
-                            MsgBox_Invalid("No transaction 2received 32!<?php echo $_SESSION['branch']?>", "Invalid Serial Read");
+                            MsgBox_Invalid("No transaction received! (Modal: invalid clicked)", "Invalid Serial Read");
                         }
                     });
                 });

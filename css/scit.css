@@ -240,12 +240,19 @@ div.title{
     box-shadow: inset 0px 9px 15px 0px rgba(0,0,0,0.08);
 }
 
-.transaction > .row, .transaction-history > .row{
+.transaction > .row, .transaction-history > .row, .guardian-list > .row{
     margin-left: 0px !important;
     margin-right: 0px !important;
 }
 
-
+.guardian-list {
+    outline-color: black;
+    background-color: #f7f8f6;
+    overflow: auto;
+    width: 100%;
+    height: 40vh;
+    padding: 20px 0px;
+}
 .transaction-history {
     outline-color: black;
     background-color: #f7f8f6;
@@ -341,8 +348,11 @@ scroll bar
     scrollbar-color: #000 #F5F5F5;
     scrollbar-width: thin;
 }
-
- /* The Modal (background) 
+.override_active {
+    color: rgb(0, 205, 0);
+    font-size: 0.75rem;
+}
+ /* The Modal (background)  * /
 .modal {
   display: block;
   position: fixed; 
@@ -355,7 +365,7 @@ scroll bar
   background-color: rgb(0,0,0); 
   background-color: rgba(0,0,0,0.80); 
 }
-*/
+
 /* Modal Content/Box */
 
 .modal-dialog {

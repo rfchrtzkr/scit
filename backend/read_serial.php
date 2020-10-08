@@ -4,7 +4,7 @@
 
     $a = serial_read();
     $b = json_decode($a, true);
-    $_SESSION['transaction_from_pos'] = $a;
+    $_SESSION['serial_received'] = $a;
 
     if($b != null || $b != ""){
         echo "true";
