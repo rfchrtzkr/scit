@@ -37,6 +37,14 @@ function serial_read()
     return $json_string;
 }
 
+function serial_read_unli()
+{
+    $serial_location = "/var/www/html/rpiserial";
+    $command = "python"; //$command = "sudo python";
+    $json_string = shell_exec("$command $serial_location/serial_read_unli.py");
+    return $json_string;
+}
+
 // invoked in BE/read.php[52]
 function senior_isValid($senior_isValid = false)
 {

@@ -101,11 +101,6 @@
             });
             </script>
             <?php
-            if(isset($_GET['cardless'])){
-                ?>
-                <script>$("#modal_guardians").modal('show');</script>
-                <?php
-            }
         } elseif($member_exists && !$nfc_active) {
             echo "inactive";
         } elseif($member_exists && $input_from_qr) {

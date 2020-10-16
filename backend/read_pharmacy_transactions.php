@@ -43,7 +43,7 @@
                     $recent = "recent";
                 }
                 
-                $generic_name_string = arrange_generic_name($row_pharma_trans['generic_name']);
+                $generic_name_string = strtolower(arrange_generic_name($row_pharma_trans['generic_name']));
                 
 
                 if($recent == "recent") {

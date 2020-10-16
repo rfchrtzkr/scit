@@ -5,9 +5,10 @@ if (true)
 { 
     include_once("../backend/php_functions.php");
     include_once("../backend/terminal_scripts.php");
+    include_once("../backend/session.php");
 
     // CODE BLOCK BELOW: simulation only
-    {
+    /*{
         $json_string2 = '{
             "items": [],
             "drugs": [{
@@ -28,19 +29,16 @@ if (true)
             $drug['max_weekly'] = "30000";
             $unregistered_drugs_1['drugs'] = $drug;
         }
-        $json_string = json_encode($unregistered_drugs_1);
-    }
+        $json_string['drugs'] = json_encode($unregistered_drugs_1);
+    }*/
 
     // Uncomment below if for use in raspi
-    $json_string = serial_read();
+    $json_string = serial_read_unli();
     $_SESSION['serial_received'] = $json_string;
-    $json = $json_string;
-    
 
-    if($drugs = json_decode($json, true)){
-    
+    if($received_data = json_decode($json_string, true)){
         $invalid_inputs = array();
-        foreach ($drugs as $row => $drug) {
+        foreach ($received_data['drugs'] as $row => $drug) {
             $generic_name = $drug['generic_name'];
             $brand = $drug['brand'];
             $dose = $drug['dose'];

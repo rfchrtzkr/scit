@@ -39,7 +39,7 @@
                     $('#body').load("../frontend/read.php", { input_nfc: read_nfc_response.trim()}, function(d){
                         //alert(d);
                         if(d.trim() == "false"){
-                            $('#body').load("../frontend/home.php #home");
+                            $('#databody').load("../frontend/home.php #home");
                         } else if (d.trim() == "inactive"){
                             MsgBox_Invalid("Member's tag is inactive!", "Invalid INFC");
                             $('#body').load("../frontend/home.php #home");
@@ -74,7 +74,7 @@
         
         $("body").on('click', "#cardless", function () {
             $.post("../backend/read_cardless.php", function(cardless_response){
-                alert(cardless_response);
+                //alert(cardless_response);
                 cardless = cardless_response.trim();
                 if(cardless == "no_received"){
                     MsgBox_Invalid("No data received from POS!", "No data received");
@@ -126,6 +126,7 @@
         $("#read_qr").click(function(){
             var input_nfc = $("#nfc_id").val();
             $('#qr_content').load("../frontend/read_qr.php", { qr_code: input_nfc}, function(d){
+                //alert(d);
                 if(d.trim() == "invalid"){
                     MsgBox_Invalid("The QR does not exist.", "Invalid QR Code");
                     $('#body').load("../frontend/home.php #home");

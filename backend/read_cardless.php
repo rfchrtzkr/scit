@@ -13,17 +13,21 @@
     }
 
     if($cardless != null || $cardless != ""){
-        $data = json_decode($cardless, true);
-
-        $osca_id = $data['osca_id'];
-        $first_name = strtolower($data['first_name']);
-        $last_name = strtolower($data['last_name']);
-        $query = "SELECT `nfc_serial`
-            FROM `view_members_with_guardian` m
-            WHERE `osca_id` = '$osca_id'
-            AND LOWER(`first_name`) = '$first_name'
-            AND LOWER(`last_name`) = '$last_name'
-            GROUP BY `osca_id`;";
+        $data2 = json_decode($cardless, true);
+        
+        foreach($data2 as $row => $data){
+            //var_dump($data);
+            $osca_id = $data['osca_id'];
+            $first_name = strtolower($data['first_name']);
+            $last_name = strtolower($data['last_name']);
+            $query = "SELECT `nfc_serial`
+                FROM `view_members_with_guardian` m
+                WHERE `osca_id` = '$osca_id'
+                AND LOWER(`first_name`) = '$first_name'
+                AND LOWER(`last_name`) = '$last_name'
+                GROUP BY `nfc_serial`;";
+                //echo $query;
+        }
         
         $result = $mysqli->query($query);
         $row_count = mysqli_num_rows($result);

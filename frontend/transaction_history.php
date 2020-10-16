@@ -85,7 +85,7 @@
                         $total_dosage = $dose * $quantity;
                         $max_monthly = $row['max_monthly'];
                         $max_weekly = $row['max_weekly'];
-                        $generic_name_string = arrange_generic_name($row['generic_name']);
+                        $generic_name_string = strtolower(arrange_generic_name($row['generic_name']));
                         $max_basis = ($is_otc)? $_SESSION['max_basis_weekly'][$generic_name_string]: $_SESSION['max_basis_monthly'][$generic_name_string];
                         // Validate if this generic_name is maxed for the month
                         if($_SESSION['compound_dosage_recent'][$generic_name_string] >= $max_basis && $recent == "recent"){
@@ -102,7 +102,7 @@
                                 <?php echo "$transaction_date <i>(By:  $clerk)</i>"?>
                             </div>
                             <div class="col col-12">
-                                <?php echo "[ $generic_name_string ] <br>"?>
+                                [ <?php echo $generic_name_string?> ]
                             </div>
                             <div class="col col-12">
                                 <b><?php echo "$brand "."$dose"."$unit @ $quantity"."pcs"?></b>

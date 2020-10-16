@@ -5,16 +5,7 @@
     $qr = qr_read();
 
     if($qr != null || $qr != ""){
-        $_SESSION['qr_data'] = $qr;
-        echo $qr;
-    } else {
-        echo "false";
-    }
-
-    $qr = qr_read();
-
-    if($qr != null || $qr != ""){
-        $_SESSION['qr_data'] = $qr;
+        $_SESSION['qr_code'] = $qr;
         echo $qr;
     } else {
         echo "false";

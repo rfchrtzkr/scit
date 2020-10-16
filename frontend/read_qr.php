@@ -4,7 +4,7 @@
     
     if(isset($_POST['qr_code']) && $_POST['qr_code'] != "") {
         $qr_code = $mysqli->real_escape_string($_POST['qr_code']);
-        $qr_code = strtolower($qr_code);
+        $qr_code = $qr_code;
 
         $qry = " SELECT `first_name`, `last_name`, `desc`, `trans_date`, 
                                         `city`, `province`, `nfc_serial`,
@@ -33,40 +33,44 @@
                     $city = $qr_request['city'];
                     $province = $qr_request['province'];
                     ?>
-                    <div id="qr_modal" class="modal">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            </div>
-                            <div class="modal-body">
-                                <?php
-                                    echo "<p>$first_name $last_name</p>";
-                                    echo "<p>$city, $province</p>";
-                                    echo "<p>$time</p>";
-                                    echo "<p>$date</p>";
+                    <div id="qr_modal" class="modal" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                </div>
+                                <div class="modal-body">
+                                    <?php
+                                        echo "<p>$first_name $last_name</p>";
+                                        echo "<p>$city, $province</p>";
+                                        echo "<p>$time</p>";
+                                        echo "<p>$date</p>";
 
-                                    echo "<p>$desc</p>";
-                                ?>
-                                <button class="btn btn-lg btn-light btn-block" id="accept">Accept</button>
-                                <button class="btn btn-lg btn-danger btn-block" id="btnCancel">Cancel</button>
-                            </div>
-                            <div class="modal-footer">
-                            </div>
+                                        echo "<p>$desc</p>";
+                                    ?>
+                                    <button class="btn btn-lg btn-light btn-block" id="accept">Accept</button>
+                                    <button class="btn btn-lg btn-danger btn-block" id="btnCancel">Cancel</button>
+                                </div>
+                                <div class="modal-footer">
+                                </div>
+                            </div> 
                         </div> 
                     </div>
                     <script>
+                        $("#qr_modal").modal();
+                        /*
                         var modal = document.getElementById("qr_modal");
                         window.onclick = function(event) {
                             if (event.target == modal) {
                                 modal.style.display = "none";
                             }
-                        }
+                        }*/
                         
                         $("#btnCancel").click(function(){
-                            modal.style.display = "none";
+                            $("#qr_modal").modal("hide");
                         });
 
                         $("#accept").click(function(){
-                            modal.style.display = "none";
+                            $("#qr_modal").modal("hide");
                             var input_nfc = '<?php echo $nfc_serial;?>';
                             
                             $('#body').load("../frontend/read.php", { input_nfc: input_nfc }, function(d){

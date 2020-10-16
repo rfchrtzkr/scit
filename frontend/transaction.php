@@ -61,7 +61,7 @@
                             $max_monthly = $item['max_monthly'];
                             $max_weekly = $item['max_weekly'];
 
-                            $generic_name_string = $item['generic_name'];
+                            $generic_name_string = strtolower($item['generic_name']);
                             
                             if(isset($max_basis_weekly[$generic_name_string])) {
                                 if($max_basis_weekly[$generic_name_string] > $max_weekly){
@@ -109,7 +109,7 @@
                             $is_otc = ($item['is_otc'] == '1') ? true: false;
                             $max_monthly = $item['max_monthly'];
                             $max_weekly = $item['max_weekly'];
-                            $generic_name_string = $item['generic_name'];
+                            $generic_name_string = strtolower($item['generic_name']);
 
                             $compound_total = 0;
 
@@ -141,12 +141,12 @@
                                     <?php echo "<br><b>($generic_name_string: ".$_SESSION['compound_dosage_recent'][$generic_name_string].")</b>"; ?>
                                     <?php echo "<br><b>(Compound Total: ".$compound_total.")</b>"; ?>
                                     <?php echo "<br><b>(Max: ".$max_basis.")</b>"; */?>
-                                </div-->
+                                </div -->
                                 <div class="col col-12">
                                     <b><?php echo "$brand $dose"."$unit @ $quantity pcs"?></b>
                                 </div>
                                 <div class="col col-12">
-                                    [ <?php echo ucwords($generic_name_string)?> ]<br>
+                                    [ <?php echo $generic_name_string?> ]<br>
                                 </div>
                             <?php 
                         } else {

@@ -11,60 +11,6 @@
     $transaction['clerk_override'] = "";
     $unregistered_drugs = [];
 
-    {
-        // Toggle comment $json_string for simulation of data for: PHARMACY
-        
-        $json_string = '{
-            "items" : [{
-                "clerk": "AL Manalon",
-                "generic_name": "cetirizinexz",
-                "brand": "Watsons",
-                "dose": "10",
-                "unit": "mg",
-                "unit_price": "6.25",
-                "quantity": "7000",
-                "vat_exempt_price": "39.06",
-                "discount_price": "7.81",
-                "payable_price": "31.25",
-                "trans_date": "2020-09-17 21:11:11",
-                "override" : 1
-                },
-                {
-                "clerk": "AL Manalon",
-                "generic_name": "Carbocisteine, Zinc",
-                "brand": "Solmux",
-                "dose": "500",
-                "unit": "mg",
-                "unit_price": "8.00",
-                "quantity": "10",
-                "vat_exempt_price": "50",
-                "discount_price": "10",
-                "payable_price": "40",
-                "trans_date": "2020-09-17 21:11:11"
-                }],
-            "drugs" : [{
-                "generic_name" : "aaa"
-                },
-                {
-                "generic_name" : "aaa"
-                }]
-            }';
-        //$_SESSION['serial_received'] = $json_string;
-    }
-
-    // INSTRUCTIONS FOR POS ADJUSTMENT
-    // put all items from DataTable to a json field name: "items", before writing to serial port
-    // in the case of pharmacy -> frmNewDrugs , the frmNewDrug.json must be put in json field name: "drugs"
-    //                          \-> this happens after frmNewDrugs.ShowDialog(json);
-
-    // Fixed: 
-    // + cardless
-    // + override
-    // + guardians list (on nfc/qr/cardless read)
-    // + transaction history modal on Transactions page
-    // [] dosage computation
-    
-    
     if(isset($_SESSION['serial_received'])){
         $clerk_override = false;
         $serial_received = $_SESSION['serial_received'];
@@ -107,7 +53,11 @@
             }
             array_push($transaction['items'], $item);
         }
-        
+        if(isset($serial_received['override'])){
+            $clerk_override = ($serial_received['override'] == "true") ? true : false;
+        } else {
+            $clerk_override = false;
+        }
         $transaction['clerk_override'] = $clerk_override;
         $transaction['trans_date'] = $trans_date;
         $transaction['clerk'] = $clerk;
