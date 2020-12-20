@@ -72,6 +72,10 @@
             });
         });
         
+        $("body").on('click', "#logout", function () {
+            window.location.replace("../backend/logout.php");
+        });
+        
         $("body").on('click', "#cardless", function () {
             $.post("../backend/read_cardless.php", function(cardless_response){
                 //alert(cardless_response);

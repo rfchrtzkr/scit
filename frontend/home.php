@@ -30,7 +30,7 @@
                 <button type="button" class="btn btn-block btn-light btn-lg" id="qr_read">QR Read</button>
                 <button type="button" class="btn btn-block btn-light btn-lg" id="cardless">Cardless Transaction</button>
             </div>
-            <div class="home-footer">
+            <div class="home-footer" id="logout">
                 <img src="/scit/resources/images/OSCA_square.png" class="logo mx-auto" style="width: 150px; height: 150px;">
                 <p>Office of the Senior Citizens Affairs</p>
                 </div>

@@ -9,6 +9,20 @@
 <div>
 <?php
 
+include('conn.php');
+
+
+$query1 = "SELECT company_name,	branch FROM `view_companies`";
+$result1 = $mysqli->query($query1);
+
+$emparray = [];
+while($row =mysqli_fetch_assoc($result1))
+{
+    $emparray[] = $row;
+}
+
+echo json_encode($emparray);
+
 
 
 
